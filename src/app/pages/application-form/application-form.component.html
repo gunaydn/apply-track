@@ -1,0 +1,164 @@
+<div class="max-w-3xl mx-auto">
+  <div class="mb-6">
+    <h2 class="text-3xl font-bold text-slate-900">
+      {{ isEditMode ? "Edit Job Application" : "Add Job Application" }}
+    </h2>
+
+    <p class="text-slate-500 mt-1">
+      {{
+        isEditMode
+          ? "Update the details of your job application."
+          : "Track a new job application and its current status."
+      }}
+    </p>
+  </div>
+
+  <form
+    [formGroup]="applicationForm"
+    (ngSubmit)="onSubmit()"
+    class="bg-white rounded-2xl shadow p-6 space-y-5"
+  >
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1">
+          Company Name
+        </label>
+
+        <input
+          type="text"
+          formControlName="companyName"
+          placeholder="Example: Trendyol"
+          class="w-full rounded-xl border border-slate-300 px-4 py-2 outline-none focus:ring-2 focus:ring-slate-800"
+        />
+
+        <p
+          *ngIf="
+            applicationForm.get('companyName')?.touched &&
+            applicationForm.get('companyName')?.invalid
+          "
+          class="text-sm text-red-500 mt-1"
+        >
+          Company name is required.
+        </p>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1">
+          Position
+        </label>
+
+        <input
+          type="text"
+          formControlName="position"
+          placeholder="Example: Frontend Developer"
+          class="w-full rounded-xl border border-slate-300 px-4 py-2 outline-none focus:ring-2 focus:ring-slate-800"
+        />
+
+        <p
+          *ngIf="
+            applicationForm.get('position')?.touched &&
+            applicationForm.get('position')?.invalid
+          "
+          class="text-sm text-red-500 mt-1"
+        >
+          Position is required.
+        </p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1">
+          Status
+        </label>
+
+        <select
+          formControlName="status"
+          class="w-full rounded-xl border border-slate-300 px-4 py-2 outline-none focus:ring-2 focus:ring-slate-800"
+        >
+          <option *ngFor="let status of statuses" [value]="status">
+            {{ status }}
+          </option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1">
+          Application Date
+        </label>
+
+        <input
+          type="date"
+          formControlName="applicationDate"
+          class="w-full rounded-xl border border-slate-300 px-4 py-2 outline-none focus:ring-2 focus:ring-slate-800"
+        />
+
+        <p
+          *ngIf="
+            applicationForm.get('applicationDate')?.touched &&
+            applicationForm.get('applicationDate')?.invalid
+          "
+          class="text-sm text-red-500 mt-1"
+        >
+          Application date is required.
+        </p>
+      </div>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-slate-700 mb-1">
+        Location
+      </label>
+
+      <input
+        type="text"
+        formControlName="location"
+        placeholder="Example: Remote / Istanbul / Izmir"
+        class="w-full rounded-xl border border-slate-300 px-4 py-2 outline-none focus:ring-2 focus:ring-slate-800"
+      />
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-slate-700 mb-1">
+        Job URL
+      </label>
+
+      <input
+        type="url"
+        formControlName="jobUrl"
+        placeholder="https://..."
+        class="w-full rounded-xl border border-slate-300 px-4 py-2 outline-none focus:ring-2 focus:ring-slate-800"
+      />
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-slate-700 mb-1">
+        Notes
+      </label>
+
+      <textarea
+        rows="4"
+        formControlName="notes"
+        placeholder="Add interview notes, recruiter info, next steps..."
+        class="w-full rounded-xl border border-slate-300 px-4 py-2 outline-none focus:ring-2 focus:ring-slate-800 resize-none"
+      ></textarea>
+    </div>
+
+    <div class="flex justify-end gap-3">
+      <button
+        type="button"
+        routerLink="/applications"
+        class="px-5 py-2 rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-100"
+      >
+        Cancel
+      </button>
+
+      <button
+        type="submit"
+        class="px-5 py-2 rounded-xl bg-slate-900 text-white hover:bg-slate-700"
+      >
+        {{ isEditMode ? "Update Application" : "Save Application" }}
+      </button>
+    </div>
+  </form>
+</div>
