@@ -1,39 +1,115 @@
 <div class="min-h-screen bg-slate-100">
-  <nav
-    class="bg-white border-b border-slate-200 px-8 h-16 flex items-center justify-between"
-  >
-    <a routerLink="/" class="text-xl font-bold text-slate-900 tracking-tight">
-      ApplyTrack
-    </a>
-
-    <div class="flex items-center gap-2">
-      <a
-        routerLink="/"
-        routerLinkActive="bg-slate-100 text-slate-900"
-        [routerLinkActiveOptions]="{ exact: true }"
-        class="h-10 px-4 inline-flex items-center rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition"
-      >
-        Dashboard
+  <nav class="sticky top-0 z-40 bg-white border-b border-slate-200">
+    <div class="px-4 sm:px-8 h-16 flex items-center justify-between">
+      <!-- LOGO -->
+      <a routerLink="/" class="text-xl font-bold text-slate-900 tracking-tight">
+        ApplyTrack
       </a>
 
-      <a
-        routerLink="/applications"
-        routerLinkActive="bg-slate-100 text-slate-900"
-        class="h-10 px-4 inline-flex items-center rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition"
-      >
-        Applications
-      </a>
+      <!-- DESKTOP NAV -->
+      <div class="hidden md:flex items-center gap-2">
+        <a
+          routerLink="/"
+          routerLinkActive="bg-slate-100 text-slate-900"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="h-10 px-4 inline-flex items-center rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition"
+        >
+          Dashboard
+        </a>
 
-      <a
-        routerLink="/applications/new"
-        class="h-10 px-5 inline-flex items-center rounded-xl bg-slate-900 text-white hover:bg-slate-700 transition ml-2"
+        <a
+          routerLink="/applications"
+          routerLinkActive="bg-slate-100 text-slate-900"
+          class="h-10 px-4 inline-flex items-center rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition"
+        >
+          Applications
+        </a>
+
+        <a
+          routerLink="/applications/new"
+          class="h-10 px-5 inline-flex items-center rounded-xl bg-slate-900 text-white hover:bg-slate-700 transition ml-2"
+        >
+          Add Application
+        </a>
+      </div>
+
+      <!-- MOBILE MENU BUTTON -->
+      <button
+        type="button"
+        (click)="toggleMobileMenu()"
+        class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-xl text-slate-700 hover:bg-slate-100 transition"
+        aria-label="Toggle menu"
       >
-        Add Application
-      </a>
+        <svg
+          *ngIf="!isMobileMenuOpen"
+          xmlns="http://www.w3.org/2000/svg"
+          class="w-6 h-6"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M4 6h16" />
+          <path d="M4 12h16" />
+          <path d="M4 18h16" />
+        </svg>
+
+        <svg
+          *ngIf="isMobileMenuOpen"
+          xmlns="http://www.w3.org/2000/svg"
+          class="w-6 h-6"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M18 6L6 18" />
+          <path d="M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- MOBILE NAV -->
+    <!-- MOBILE NAV -->
+    <div
+      *ngIf="isMobileMenuOpen"
+      class="md:hidden absolute right-4 top-[72px] z-50 w-48 rounded-2xl bg-white border border-slate-100 shadow-2xl p-2"
+    >
+      <div class="flex flex-col gap-1">
+        <a
+          routerLink="/"
+          routerLinkActive="bg-slate-100 text-slate-900 font-semibold"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="h-10 px-4 flex items-center rounded-xl text-sm text-slate-700 hover:bg-slate-100 transition"
+        >
+          Dashboard
+        </a>
+
+        <a
+          routerLink="/applications"
+          routerLinkActive="bg-slate-100 text-slate-900 font-semibold"
+          class="h-10 px-4 flex items-center rounded-xl text-sm text-slate-700 hover:bg-slate-100 transition"
+        >
+          Applications
+        </a>
+
+        <div class="h-px bg-slate-100 my-1"></div>
+
+        <a
+          routerLink="/applications/new"
+          class="h-10 px-4 flex items-center justify-center rounded-xl bg-slate-900 text-sm font-medium text-white hover:bg-slate-700 transition"
+        >
+          Add Application
+        </a>
+      </div>
     </div>
   </nav>
 
-  <main class="p-8">
+  <main class="px-4 sm:p-8">
     <router-outlet></router-outlet>
   </main>
 </div>

@@ -3,6 +3,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApplicationService } from 'src/app/services/application.service';
 import { ApplicationStatus } from 'src/app/models/job-application';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-application-form',
@@ -19,6 +20,7 @@ export class ApplicationFormComponent implements OnInit {
   ];
 
   isEditMode = false;
+  returnUrl = '/applications';
   applicationId: string | null = null;
 
   applicationForm = this.fb.group({
@@ -35,11 +37,19 @@ export class ApplicationFormComponent implements OnInit {
     private fb: FormBuilder,
     private applicationService: ApplicationService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private location: Location
   ) {}
 
   ngOnInit(): void {
     this.applicationId = this.route.snapshot.paramMap.get('id');
+
+    const returnUrlFromQuery =
+      this.route.snapshot.queryParamMap.get('returnUrl');
+
+    if (returnUrlFromQuery) {
+      this.returnUrl = returnUrlFromQuery;
+    }
 
     if (this.applicationId) {
       this.isEditMode = true;
@@ -92,6 +102,14 @@ export class ApplicationFormComponent implements OnInit {
       this.applicationService.addApplication(applicationData);
     }
 
-    this.router.navigate(['/applications']);
+    this.router.navigateByUrl(this.returnUrl);
+  }
+
+  goBack(): void {
+    this.router.navigateByUrl(this.returnUrl);
+  }
+
+  goBackToLastPage(): void {
+    this.location.back();
   }
 }

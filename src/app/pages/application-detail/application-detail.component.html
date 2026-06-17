@@ -1,0 +1,294 @@
+<div *ngIf="application" class="max-w-4xl mx-auto pb-10">
+  <!-- PAGE HEADER -->
+  <div class="mb-5 mt-4">
+    <a
+      routerLink="/applications"
+      class="inline-flex items-center text-sm text-slate-500 hover:text-slate-900 mb-4"
+    >
+      ← Back to Applications
+    </a>
+
+    <div
+      class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between"
+    >
+      <div class="min-w-0 flex-1">
+        <div class="flex items-start justify-between gap-3">
+          <div class="min-w-0">
+            <div class="flex items-center gap-2 flex-wrap">
+              <h2
+                class="text-2xl sm:text-3xl font-bold text-slate-900 leading-tight break-words"
+              >
+                {{ application.companyName }}
+              </h2>
+
+              <span
+                class="md:hidden inline-flex px-3 py-1 rounded-full text-xs font-medium"
+                [ngClass]="getStatusClass(application.status)"
+              >
+                {{ application.status }}
+              </span>
+            </div>
+
+            <p class="text-sm sm:text-base text-slate-500 mt-1 break-words">
+              {{ application.position }}
+            </p>
+          </div>
+
+          <!-- MOBILE ICON ACTIONS -->
+          <div class="md:hidden shrink-0 flex items-center gap-1">
+            <a
+              [routerLink]="['/applications/edit', application.id]"
+              [queryParams]="{ returnUrl: '/applications/' + application.id }"
+              title="Edit"
+              class="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-5 h-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M16.862 4.487l1.651-1.651a2.121 2.121 0 013 3l-1.651 1.651m-3-3L4.5 16.849V20.25h3.401L20.362 7.487m-3-3l3 3"
+                />
+              </svg>
+            </a>
+
+            <button
+              type="button"
+              title="Delete"
+              (click)="deleteApplication()"
+              class="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-red-100 bg-white text-red-500 hover:bg-red-50 hover:text-red-700 transition"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-5 h-5"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M3 6h18" />
+                <path d="M8 6V4h8v2" />
+                <path d="M6 6l1 15h10l1-15" />
+                <path d="M10 11v6" />
+                <path d="M14 11v6" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- DESKTOP ACTIONS -->
+      <div class="hidden md:flex items-center gap-2">
+        <a
+          [routerLink]="['/applications/edit', application.id]"
+          [queryParams]="{ returnUrl: '/applications/' + application.id }"
+          class="h-10 px-5 inline-flex items-center rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-100 transition"
+        >
+          Edit
+        </a>
+
+        <button
+          type="button"
+          (click)="deleteApplication()"
+          class="h-10 px-5 inline-flex items-center rounded-xl bg-red-500 text-white hover:bg-red-600 transition"
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DETAILS CARD -->
+  <div class="bg-white rounded-2xl shadow overflow-hidden">
+    <div
+      class="p-5 sm:p-6 border-b border-slate-100 flex items-start justify-between gap-4"
+    >
+      <div>
+        <h3 class="text-lg sm:text-xl font-bold text-slate-900">
+          Application Details
+        </h3>
+
+        <p class="text-sm text-slate-500 mt-1">
+          Full information about this job application.
+        </p>
+      </div>
+
+      <span
+        class="hidden md:inline-flex px-3 py-1 rounded-full text-sm font-medium"
+        [ngClass]="getStatusClass(application.status)"
+      >
+        {{ application.status }}
+      </span>
+    </div>
+
+    <!-- MOBILE DETAIL LIST -->
+    <div class="md:hidden divide-y divide-slate-100">
+      <div class="p-5">
+        <p class="text-xs font-medium text-slate-400 uppercase tracking-wide">
+          Company
+        </p>
+
+        <p class="font-semibold text-slate-900 mt-1 break-words">
+          {{ application.companyName }}
+        </p>
+      </div>
+
+      <div class="p-5">
+        <p class="text-xs font-medium text-slate-400 uppercase tracking-wide">
+          Position
+        </p>
+
+        <p class="font-semibold text-slate-900 mt-1 break-words">
+          {{ application.position }}
+        </p>
+      </div>
+
+      <div class="grid grid-cols-2 divide-x divide-slate-100">
+        <div class="p-5">
+          <p class="text-xs font-medium text-slate-400 uppercase tracking-wide">
+            Date
+          </p>
+
+          <p class="font-semibold text-slate-900 mt-1">
+            {{ application.applicationDate }}
+          </p>
+        </div>
+
+        <div class="p-5">
+          <p class="text-xs font-medium text-slate-400 uppercase tracking-wide">
+            Location
+          </p>
+
+          <p class="font-semibold text-slate-900 mt-1 break-words">
+            {{ application.location || "-" }}
+          </p>
+        </div>
+      </div>
+
+      <div class="p-5">
+        <p class="text-xs font-medium text-slate-400 uppercase tracking-wide">
+          Created At
+        </p>
+
+        <p class="font-semibold text-slate-900 mt-1">
+          {{ application.createdAt | date : "medium" }}
+        </p>
+      </div>
+
+      <div class="p-5">
+        <p class="text-xs font-medium text-slate-400 uppercase tracking-wide">
+          Job Link
+        </p>
+
+        <a
+          *ngIf="application.jobUrl"
+          [href]="application.jobUrl"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="font-semibold text-blue-600 hover:text-blue-800 mt-1 inline-block break-all"
+        >
+          Open job posting
+        </a>
+
+        <p
+          *ngIf="!application.jobUrl"
+          class="font-semibold text-slate-900 mt-1"
+        >
+          -
+        </p>
+      </div>
+    </div>
+
+    <!-- DESKTOP DETAIL GRID -->
+    <div class="hidden md:grid p-6 grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <p class="text-sm text-slate-500">Company</p>
+
+        <p class="font-semibold text-slate-900 mt-1">
+          {{ application.companyName }}
+        </p>
+      </div>
+
+      <div>
+        <p class="text-sm text-slate-500">Position</p>
+
+        <p class="font-semibold text-slate-900 mt-1">
+          {{ application.position }}
+        </p>
+      </div>
+
+      <div>
+        <p class="text-sm text-slate-500">Application Date</p>
+
+        <p class="font-semibold text-slate-900 mt-1">
+          {{ application.applicationDate }}
+        </p>
+      </div>
+
+      <div>
+        <p class="text-sm text-slate-500">Location</p>
+
+        <p class="font-semibold text-slate-900 mt-1">
+          {{ application.location || "-" }}
+        </p>
+      </div>
+
+      <div>
+        <p class="text-sm text-slate-500">Created At</p>
+
+        <p class="font-semibold text-slate-900 mt-1">
+          {{ application.createdAt | date : "medium" }}
+        </p>
+      </div>
+
+      <div>
+        <p class="text-sm text-slate-500">Job Link</p>
+
+        <a
+          *ngIf="application.jobUrl"
+          [href]="application.jobUrl"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="font-semibold text-blue-600 hover:text-blue-800 mt-1 inline-block break-all"
+        >
+          Open job posting
+        </a>
+
+        <p
+          *ngIf="!application.jobUrl"
+          class="font-semibold text-slate-900 mt-1"
+        >
+          -
+        </p>
+      </div>
+    </div>
+
+    <!-- NOTES -->
+    <div class="p-5 sm:p-6 border-t border-slate-100">
+      <p
+        class="text-xs sm:text-sm font-medium text-slate-400 sm:text-slate-500 uppercase sm:normal-case tracking-wide sm:tracking-normal"
+      >
+        Notes
+      </p>
+
+      <p
+        *ngIf="application.notes"
+        class="text-slate-800 mt-2 leading-relaxed whitespace-pre-line"
+      >
+        {{ application.notes }}
+      </p>
+
+      <p *ngIf="!application.notes" class="text-slate-400 mt-2">
+        No notes added.
+      </p>
+    </div>
+  </div>
+</div>

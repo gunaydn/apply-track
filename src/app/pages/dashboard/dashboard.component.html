@@ -1,32 +1,42 @@
-<div>
-  <div class="mb-8">
+<div class="space-y-6">
+  <!-- DESKTOP HEADER -->
+  <div class="hidden md:block mb-8">
     <h2 class="text-3xl font-bold text-slate-900">Dashboard</h2>
     <p class="text-slate-500 mt-1">Overview of your job application process.</p>
   </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-4 gap-5 mb-8">
-    <div class="bg-white rounded-2xl shadow p-6">
+  <!-- MOBILE GREETING -->
+  <div class="md:hidden">
+    <p class="text-sm text-slate-500">Welcome back</p>
+    <h2 class="text-2xl font-bold text-slate-900 mt-1">
+      Track your applications
+    </h2>
+  </div>
+
+  <!-- DESKTOP TOP STATS -->
+  <div class="hidden md:grid md:grid-cols-2 xl:grid-cols-4 gap-5">
+    <div class="bg-white rounded-2xl shadow p-5 sm:p-6">
       <p class="text-sm text-slate-500">Total Applications</p>
       <h3 class="text-3xl font-bold text-slate-900 mt-2">
         {{ totalApplications }}
       </h3>
     </div>
 
-    <div class="bg-white rounded-2xl shadow p-6">
+    <div class="bg-white rounded-2xl shadow p-5 sm:p-6">
       <p class="text-sm text-slate-500">Interviews</p>
       <h3 class="text-3xl font-bold text-purple-700 mt-2">
         {{ interviewCount }}
       </h3>
     </div>
 
-    <div class="bg-white rounded-2xl shadow p-6">
+    <div class="bg-white rounded-2xl shadow p-5 sm:p-6">
       <p class="text-sm text-slate-500">Offers</p>
       <h3 class="text-3xl font-bold text-green-700 mt-2">
         {{ offerCount }}
       </h3>
     </div>
 
-    <div class="bg-white rounded-2xl shadow p-6">
+    <div class="bg-white rounded-2xl shadow p-5 sm:p-6">
       <p class="text-sm text-slate-500">Rejected</p>
       <h3 class="text-3xl font-bold text-red-700 mt-2">
         {{ rejectedCount }}
@@ -34,42 +44,302 @@
     </div>
   </div>
 
-  <div class="bg-white rounded-2xl shadow p-6">
-    <div class="flex items-center justify-between mb-5">
+  <!-- MOBILE STATUS OVERVIEW -->
+  <div class="md:hidden bg-white rounded-2xl shadow p-4">
+    <div class="flex items-center justify-between mb-4">
       <div>
-        <h3 class="text-xl font-bold text-slate-900">Recent Applications</h3>
-        <p class="text-slate-500 text-sm">Your latest job applications.</p>
+        <h3 class="text-base font-bold text-slate-900">Status Overview</h3>
+        <p class="text-xs text-slate-500 mt-0.5">Current application status.</p>
       </div>
 
-      <a
-        routerLink="/applications"
-        class="text-sm font-medium text-slate-700 hover:text-slate-900"
-      >
-        View all
-      </a>
+      <span class="text-[11px] font-medium text-slate-400"> This Month </span>
     </div>
 
-    <div *ngIf="recentApplications.length === 0" class="text-slate-500">
-      No applications yet.
+    <div
+      *ngIf="totalApplications === 0"
+      class="py-8 text-center text-sm text-slate-500"
+    >
+      No data available yet.
     </div>
 
-    <div *ngIf="recentApplications.length > 0" class="space-y-3">
-      <div
-        *ngFor="let app of recentApplications"
-        class="flex items-center justify-between border border-slate-200 rounded-xl p-4"
-      >
+    <div *ngIf="totalApplications > 0" class="flex items-center gap-5">
+      <!-- SMALL DONUT -->
+      <div class="shrink-0">
+        <div
+          class="relative w-28 h-28 rounded-full"
+          [style.background]="statusChartGradient"
+        >
+          <div
+            class="absolute inset-5 rounded-full bg-white flex flex-col items-center justify-center shadow-inner"
+          >
+            <span class="text-2xl font-bold text-slate-900">
+              {{ totalApplications }}
+            </span>
+
+            <span class="text-[10px] text-slate-500"> Total </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- COMPACT LEGEND -->
+      <div class="flex-1 space-y-2">
+        <div
+          *ngFor="let item of statusOverview"
+          class="flex items-center justify-between gap-3"
+        >
+          <div class="flex items-center gap-2 min-w-0">
+            <span
+              class="w-2 h-2 rounded-full shrink-0"
+              [ngClass]="item.barClass"
+            ></span>
+
+            <span class="text-xs font-medium text-slate-700 truncate">
+              {{ item.label }}
+            </span>
+          </div>
+
+          <span class="text-xs text-slate-500 whitespace-nowrap">
+            {{ item.percentage }}%
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MOBILE QUICK ACTIONS -->
+  <div class="md:hidden grid grid-cols-2 gap-3">
+    <a
+      routerLink="/applications/new"
+      class="h-11 inline-flex items-center justify-center rounded-xl bg-slate-900 text-white text-sm font-medium hover:bg-slate-700 transition"
+    >
+      Add Application
+    </a>
+
+    <a
+      routerLink="/applications"
+      class="h-11 inline-flex items-center justify-center rounded-xl bg-white border border-slate-200 text-slate-700 text-sm font-medium hover:bg-slate-50 transition"
+    >
+      View All
+    </a>
+  </div>
+
+  <!-- DESKTOP STATUS + METRICS -->
+  <div class="hidden md:grid grid-cols-1 xl:grid-cols-3 gap-6">
+    <!-- DESKTOP STATUS OVERVIEW -->
+    <div class="xl:col-span-2 bg-white rounded-2xl shadow p-5 sm:p-6">
+      <div class="flex items-center justify-between mb-6">
         <div>
-          <h4 class="font-semibold text-slate-900">
-            {{ app.companyName }}
-          </h4>
-          <p class="text-sm text-slate-500">
-            {{ app.position }} · {{ app.applicationDate }}
+          <h3 class="text-xl font-bold text-slate-900">Status Overview</h3>
+
+          <p class="text-sm text-slate-500 mt-1">
+            Distribution of your applications by status.
           </p>
         </div>
 
-        <span class="text-sm font-medium text-slate-700">
-          {{ app.status }}
-        </span>
+        <a
+          routerLink="/applications"
+          class="text-sm font-medium text-slate-700 hover:text-slate-900"
+        >
+          View all
+        </a>
+      </div>
+
+      <div *ngIf="totalApplications === 0" class="text-slate-500">
+        No data available yet.
+      </div>
+
+      <div *ngIf="totalApplications > 0" class="space-y-5">
+        <div *ngFor="let item of statusOverview">
+          <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center gap-2">
+              <span
+                class="w-2.5 h-2.5 rounded-full"
+                [ngClass]="item.barClass"
+              ></span>
+
+              <span class="text-sm font-medium text-slate-700">
+                {{ item.label }}
+              </span>
+            </div>
+
+            <div class="text-sm text-slate-500">
+              <span class="font-semibold" [ngClass]="item.textClass">
+                {{ item.count }}
+              </span>
+              <span> · {{ item.percentage }}%</span>
+            </div>
+          </div>
+
+          <div class="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
+            <div
+              class="h-full rounded-full transition-all"
+              [ngClass]="item.barClass"
+              [style.width.%]="item.percentage"
+            ></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DESKTOP SUCCESS METRICS -->
+    <div class="bg-white rounded-2xl shadow p-5 sm:p-6">
+      <h3 class="text-xl font-bold text-slate-900">Success Metrics</h3>
+
+      <p class="text-sm text-slate-500 mt-1 mb-6">
+        Quick performance indicators.
+      </p>
+
+      <div class="space-y-4">
+        <div class="rounded-xl border border-slate-200 p-4">
+          <div class="flex items-center justify-between gap-4">
+            <p class="text-sm text-slate-500">Interview Rate</p>
+            <p class="text-lg font-bold text-purple-700">
+              {{ interviewRate }}%
+            </p>
+          </div>
+
+          <p class="text-xs text-slate-400 mt-1">
+            Applications that reached interview stage.
+          </p>
+        </div>
+
+        <div class="rounded-xl border border-slate-200 p-4">
+          <div class="flex items-center justify-between gap-4">
+            <p class="text-sm text-slate-500">Offer Rate</p>
+            <p class="text-lg font-bold text-green-700">{{ offerRate }}%</p>
+          </div>
+
+          <p class="text-xs text-slate-400 mt-1">
+            Applications that resulted in offers.
+          </p>
+        </div>
+
+        <div class="rounded-xl border border-slate-200 p-4">
+          <div class="flex items-center justify-between gap-4">
+            <p class="text-sm text-slate-500">Rejection Rate</p>
+            <p class="text-lg font-bold text-red-700">{{ rejectionRate }}%</p>
+          </div>
+
+          <p class="text-xs text-slate-400 mt-1">
+            Applications that were rejected.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MOBILE SUCCESS METRICS -->
+  <div class="md:hidden bg-white rounded-2xl shadow p-4">
+    <div class="flex items-center justify-between mb-4">
+      <div>
+        <h3 class="text-base font-bold text-slate-900">Success Metrics</h3>
+        <p class="text-xs text-slate-500 mt-0.5">
+          Quick performance indicators.
+        </p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-3 gap-3">
+      <div class="rounded-xl bg-purple-50 p-3">
+        <p class="text-[11px] text-slate-500">Interview</p>
+        <p class="text-xl font-bold text-purple-700 mt-1">
+          {{ interviewRate }}%
+        </p>
+      </div>
+
+      <div class="rounded-xl bg-green-50 p-3">
+        <p class="text-[11px] text-slate-500">Offer</p>
+        <p class="text-xl font-bold text-green-700 mt-1">{{ offerRate }}%</p>
+      </div>
+
+      <div class="rounded-xl bg-red-50 p-3">
+        <p class="text-[11px] text-slate-500">Rejected</p>
+        <p class="text-xl font-bold text-red-700 mt-1">{{ rejectionRate }}%</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- RECENT + DESKTOP QUICK ACTIONS -->
+  <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+    <!-- RECENT APPLICATIONS -->
+    <div class="xl:col-span-2 bg-white rounded-2xl shadow p-5 sm:p-6">
+      <div
+        class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-5"
+      >
+        <div>
+          <h3 class="text-xl font-bold text-slate-900">Recent Applications</h3>
+
+          <p class="text-slate-500 text-sm">Your latest job applications.</p>
+        </div>
+
+        <a
+          routerLink="/applications"
+          class="text-sm font-medium text-slate-700 hover:text-slate-900"
+        >
+          View all
+        </a>
+      </div>
+
+      <div *ngIf="recentApplications.length === 0" class="text-slate-500">
+        No applications yet.
+      </div>
+
+      <div *ngIf="recentApplications.length > 0" class="space-y-3">
+        <a
+          *ngFor="let app of recentApplications"
+          [routerLink]="['/applications', app.id]"
+          class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border border-slate-200 rounded-xl p-4 hover:bg-slate-50 transition"
+        >
+          <div>
+            <h4 class="font-semibold text-slate-900">
+              {{ app.companyName }}
+            </h4>
+
+            <p class="text-sm text-slate-500">
+              {{ app.position }} · {{ app.applicationDate }}
+            </p>
+          </div>
+
+          <span
+            class="self-start sm:self-auto text-sm font-medium text-slate-700"
+          >
+            {{ app.status }}
+          </span>
+        </a>
+      </div>
+    </div>
+
+    <!-- DESKTOP QUICK ACTIONS -->
+    <div class="hidden md:block bg-white rounded-2xl shadow p-5 sm:p-6">
+      <h3 class="text-xl font-bold text-slate-900">Quick Actions</h3>
+
+      <p class="text-sm text-slate-500 mt-1 mb-6">Jump into common actions.</p>
+
+      <div class="space-y-3">
+        <a
+          routerLink="/applications/new"
+          class="flex items-center justify-between rounded-xl bg-slate-900 text-white px-4 py-3 hover:bg-slate-700 transition"
+        >
+          <span>Add New Application</span>
+          <span class="text-lg leading-none">+</span>
+        </a>
+
+        <a
+          routerLink="/applications"
+          class="flex items-center justify-between rounded-xl border border-slate-200 px-4 py-3 text-slate-700 hover:bg-slate-50 transition"
+        >
+          <span>View All Applications</span>
+          <span>→</span>
+        </a>
+
+        <a
+          routerLink="/applications"
+          [queryParams]="{ status: 'Interview' }"
+          class="flex items-center justify-between rounded-xl border border-slate-200 px-4 py-3 text-slate-700 hover:bg-slate-50 transition"
+        >
+          <span>Review Interviews</span>
+          <span>→</span>
+        </a>
       </div>
     </div>
   </div>

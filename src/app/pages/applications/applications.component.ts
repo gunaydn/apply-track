@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 import {
   JobApplication,
   ApplicationStatus,
@@ -17,6 +18,11 @@ export class ApplicationsComponent implements OnInit {
   searchTerm = '';
   selectedStatus: ApplicationStatus | 'All' = 'All';
 
+  applicationToDelete: JobApplication | null = null;
+
+  isFabVisible = true;
+  private lastScrollY = 0;
+
   statuses: (ApplicationStatus | 'All')[] = [
     'All',
     'Applied',
@@ -26,10 +32,29 @@ export class ApplicationsComponent implements OnInit {
     'Saved',
   ];
 
-  constructor(private applicationService: ApplicationService) {}
+  constructor(
+    private applicationService: ApplicationService,
+    private toastr: ToastrService
+  ) {}
 
   ngOnInit(): void {
     this.loadApplications();
+  }
+
+  @HostListener('window:scroll', [])
+  onWindowScroll(): void {
+    const scrollTop =
+      window.scrollY ||
+      document.documentElement.scrollTop ||
+      document.body.scrollTop ||
+      0;
+
+    const windowHeight = window.innerHeight;
+    const documentHeight = document.documentElement.scrollHeight;
+
+    const distanceFromBottom = documentHeight - (scrollTop + windowHeight);
+
+    this.isFabVisible = distanceFromBottom > 100;
   }
 
   loadApplications(): void {
@@ -59,8 +84,27 @@ export class ApplicationsComponent implements OnInit {
     this.applyFilters();
   }
 
-  deleteApplication(id: string): void {
-    this.applicationService.deleteApplication(id);
+  openDeleteConfirm(application: JobApplication): void {
+    this.applicationToDelete = application;
+  }
+
+  cancelDelete(): void {
+    this.applicationToDelete = null;
+  }
+
+  confirmDelete(): void {
+    if (!this.applicationToDelete) {
+      return;
+    }
+
+    this.applicationService.deleteApplication(this.applicationToDelete.id);
+
+    this.toastr.success(
+      `${this.applicationToDelete.companyName} application deleted successfully.`,
+      'Deleted'
+    );
+
+    this.applicationToDelete = null;
     this.loadApplications();
   }
 

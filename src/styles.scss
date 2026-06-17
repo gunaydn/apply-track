@@ -1,3 +1,40 @@
+@import "ngx-toastr/toastr";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@import "ngx-toastr/toastr";
+
+@media (max-width: 640px) {
+  .toast-container {
+    width: auto !important;
+    left: 16px !important;
+    right: 16px !important;
+    bottom: 16px !important;
+    top: auto !important;
+  }
+
+  .toast-container .ngx-toastr {
+    width: 100% !important;
+    min-height: auto !important;
+    padding: 12px 14px 12px 44px !important;
+    border-radius: 14px !important;
+    font-size: 13px !important;
+    line-height: 1.35 !important;
+    box-shadow: 0 10px 25px rgba(15, 23, 42, 0.18) !important;
+  }
+
+  .toast-container .toast-title {
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    margin-bottom: 2px !important;
+  }
+
+  .toast-container .toast-message {
+    font-size: 12px !important;
+  }
+
+  .toast-container .toast-progress {
+    height: 2px !important;
+  }
+}
