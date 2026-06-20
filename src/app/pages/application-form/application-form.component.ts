@@ -115,8 +115,6 @@ export class ApplicationFormComponent implements OnInit {
         console.error('Application could not be added', err);
       },
     });
-
-    this.router.navigateByUrl(this.returnUrl);
   }
 
   goBack(): void {
