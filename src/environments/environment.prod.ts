@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://senin-backend-urlin.com/api',
+  apiUrl: 'https://api-production-0b1da.up.railway.app',
 };
