@@ -8,12 +8,13 @@ import {
   RegisterRequest,
   AuthUser,
 } from '../models/auth.model';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:3000/auth';
+  private apiUrl = `${environment.apiUrl}/applications`;
 
   constructor(private http: HttpClient) {}
 
