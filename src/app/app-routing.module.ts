@@ -11,6 +11,11 @@ const routes: Routes = [
   { path: 'applications/new', component: ApplicationFormComponent },
   { path: 'applications/edit/:id', component: ApplicationFormComponent },
   { path: 'applications/:id', component: ApplicationDetailComponent },
+  {
+    path: 'auth',
+    loadChildren: () =>
+      import('./pages/auth/auth.module').then((m) => m.AuthModule),
+  },
   { path: '**', redirectTo: '' },
 ];
 

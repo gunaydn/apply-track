@@ -9,6 +9,7 @@ import { ApplicationsComponent } from './pages/applications/applications.compone
 import { ApplicationFormComponent } from './pages/application-form/application-form.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ApplicationDetailComponent } from './pages/application-detail/application-detail.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { ApplicationDetailComponent } from './pages/application-detail/applicati
     AppRoutingModule,
     ReactiveFormsModule,
     FormsModule,
+    HttpClientModule,
     BrowserAnimationsModule,
     ToastrModule.forRoot({
       positionClass: 'toast-top-right',

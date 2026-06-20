@@ -1,9 +1,8 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
-import {
-  JobApplication,
-  ApplicationStatus,
-} from 'src/app/models/job-application';
+
+import { Application, ApplicationStatus } from 'src/app/models/job-application';
+
 import { ApplicationService } from 'src/app/services/application.service';
 
 @Component({
@@ -12,16 +11,15 @@ import { ApplicationService } from 'src/app/services/application.service';
   styleUrls: ['./applications.component.scss'],
 })
 export class ApplicationsComponent implements OnInit {
-  applications: JobApplication[] = [];
-  filteredApplications: JobApplication[] = [];
+  applications: Application[] = [];
+  filteredApplications: Application[] = [];
 
   searchTerm = '';
   selectedStatus: ApplicationStatus | 'All' = 'All';
 
-  applicationToDelete: JobApplication | null = null;
+  applicationToDelete: Application | null = null;
 
   isFabVisible = true;
-  private lastScrollY = 0;
 
   statuses: (ApplicationStatus | 'All')[] = [
     'All',
@@ -58,8 +56,16 @@ export class ApplicationsComponent implements OnInit {
   }
 
   loadApplications(): void {
-    this.applications = this.applicationService.getApplications();
-    this.applyFilters();
+    this.applicationService.getApplications().subscribe({
+      next: (data) => {
+        this.applications = data;
+        this.applyFilters();
+      },
+      error: (err) => {
+        console.error('Applications could not be loaded', err);
+        this.toastr.error('Applications could not be loaded.', 'Error');
+      },
+    });
   }
 
   applyFilters(): void {
@@ -84,7 +90,7 @@ export class ApplicationsComponent implements OnInit {
     this.applyFilters();
   }
 
-  openDeleteConfirm(application: JobApplication): void {
+  openDeleteConfirm(application: Application): void {
     this.applicationToDelete = application;
   }
 
@@ -97,15 +103,30 @@ export class ApplicationsComponent implements OnInit {
       return;
     }
 
-    this.applicationService.deleteApplication(this.applicationToDelete.id);
+    const applicationId = this.applicationToDelete._id;
 
-    this.toastr.success(
-      `${this.applicationToDelete.companyName} application deleted successfully.`,
-      'Deleted'
-    );
+    if (!applicationId) {
+      this.toastr.error('Application id not found.', 'Error');
+      return;
+    }
 
-    this.applicationToDelete = null;
-    this.loadApplications();
+    const companyName = this.applicationToDelete.companyName;
+
+    this.applicationService.deleteApplication(applicationId).subscribe({
+      next: () => {
+        this.toastr.success(
+          `${companyName} application deleted successfully.`,
+          'Deleted'
+        );
+
+        this.applicationToDelete = null;
+        this.loadApplications();
+      },
+      error: (err) => {
+        console.error('Application could not be deleted', err);
+        this.toastr.error('Application could not be deleted.', 'Error');
+      },
+    });
   }
 
   getStatusClass(status: string): string {

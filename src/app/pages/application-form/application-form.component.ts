@@ -54,23 +54,22 @@ export class ApplicationFormComponent implements OnInit {
     if (this.applicationId) {
       this.isEditMode = true;
 
-      const application = this.applicationService.getApplicationById(
-        this.applicationId
-      );
-
-      if (!application) {
-        this.router.navigate(['/applications']);
-        return;
-      }
-
-      this.applicationForm.patchValue({
-        companyName: application.companyName,
-        position: application.position,
-        status: application.status,
-        applicationDate: application.applicationDate,
-        location: application.location || '',
-        jobUrl: application.jobUrl || '',
-        notes: application.notes || '',
+      this.applicationService.getApplicationById(this.applicationId).subscribe({
+        next: (application) => {
+          this.applicationForm.patchValue({
+            companyName: application.companyName,
+            position: application.position,
+            status: application.status,
+            applicationDate: application.applicationDate,
+            location: application.location || '',
+            jobUrl: application.jobUrl || '',
+            notes: application.notes || '',
+          });
+        },
+        error: (err) => {
+          console.error('Application could not be loaded', err);
+          this.router.navigate(['/applications']);
+        },
       });
     }
   }
@@ -94,13 +93,28 @@ export class ApplicationFormComponent implements OnInit {
     };
 
     if (this.isEditMode && this.applicationId) {
-      this.applicationService.updateApplication(
-        this.applicationId,
-        applicationData
-      );
-    } else {
-      this.applicationService.addApplication(applicationData);
+      this.applicationService
+        .updateApplication(this.applicationId, applicationData)
+        .subscribe({
+          next: () => {
+            this.router.navigateByUrl(this.returnUrl);
+          },
+          error: (err) => {
+            console.error('Application could not be updated', err);
+          },
+        });
+
+      return;
     }
+
+    this.applicationService.addApplication(applicationData).subscribe({
+      next: () => {
+        this.router.navigateByUrl(this.returnUrl);
+      },
+      error: (err) => {
+        console.error('Application could not be added', err);
+      },
+    });
 
     this.router.navigateByUrl(this.returnUrl);
   }

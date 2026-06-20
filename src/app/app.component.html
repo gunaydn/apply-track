@@ -1,5 +1,12 @@
-<div class="min-h-screen bg-slate-100">
-  <nav class="sticky top-0 z-40 bg-white border-b border-slate-200">
+<div
+  [ngClass]="
+    hideNavbar ? 'min-h-screen bg-slate-950' : 'min-h-screen bg-slate-100'
+  "
+>
+  <nav
+    *ngIf="!hideNavbar"
+    class="sticky top-0 z-40 bg-white border-b border-slate-200"
+  >
     <div class="px-4 sm:px-8 h-16 flex items-center justify-between">
       <!-- LOGO -->
       <a routerLink="/" class="text-xl font-bold text-slate-900 tracking-tight">
@@ -31,6 +38,14 @@
         >
           Add Application
         </a>
+
+        <button
+          type="button"
+          (click)="logout()"
+          class="h-10 px-4 inline-flex items-center rounded-xl bg-red-500 text-white hover:text-red-300 hover:bg-slate-100 transition ml-1"
+        >
+          Logout
+        </button>
       </div>
 
       <!-- MOBILE MENU BUTTON -->
@@ -105,11 +120,19 @@
         >
           Add Application
         </a>
+
+        <button
+          type="button"
+          (click)="logout()"
+          class="h-10 px-4 flex items-center justify-center rounded-xl text-sm font-medium bg-red-500 text-white transition"
+        >
+          Logout
+        </button>
       </div>
     </div>
   </nav>
 
-  <main class="px-4 py-2 sm:p-8">
+  <main [ngClass]="hideNavbar ? 'p-0' : 'px-4 py-2 sm:p-8'">
     <router-outlet></router-outlet>
   </main>
 </div>

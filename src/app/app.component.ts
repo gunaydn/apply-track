@@ -1,6 +1,7 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs';
+import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -10,16 +11,21 @@ import { filter } from 'rxjs';
 export class AppComponent implements OnInit {
   isMobileMenuOpen = false;
   isFabVisible = true;
+  hideNavbar = false;
   private lastScrollY = 0;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private authService: AuthService) {}
 
   ngOnInit(): void {
     this.closeMobileMenu();
 
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
-      .subscribe(() => {
+      .subscribe((event) => {
+        const navigationEnd = event as NavigationEnd;
+
+        this.hideNavbar = navigationEnd.urlAfterRedirects.startsWith('/auth');
+
         this.closeMobileMenu();
       });
   }
@@ -49,5 +55,11 @@ export class AppComponent implements OnInit {
 
   closeMobileMenu(): void {
     this.isMobileMenuOpen = false;
+  }
+
+  logout(): void {
+    this.authService.logout();
+    this.closeMobileMenu();
+    this.router.navigate(['/auth/login']);
   }
 }

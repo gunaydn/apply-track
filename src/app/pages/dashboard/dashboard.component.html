@@ -287,7 +287,7 @@
       <div *ngIf="recentApplications.length > 0" class="space-y-3">
         <a
           *ngFor="let app of recentApplications"
-          [routerLink]="['/applications', app.id]"
+          [routerLink]="['/applications', app._id]"
           class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border border-slate-200 rounded-xl p-4 hover:bg-slate-50 transition"
         >
           <div>

@@ -1,60 +1,36 @@
 import { Injectable } from '@angular/core';
-import { JobApplication } from '../models/job-application';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { Application } from '../models/job-application';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ApplicationService {
-  private storageKey = 'job-applications';
+  private apiUrl = 'http://localhost:3000/applications';
 
-  getApplications(): JobApplication[] {
-    const data = localStorage.getItem(this.storageKey);
-    return data ? JSON.parse(data) : [];
+  constructor(private http: HttpClient) {}
+
+  getApplications(): Observable<Application[]> {
+    return this.http.get<Application[]>(this.apiUrl);
   }
 
-  getApplicationById(id: string): JobApplication | undefined {
-    return this.getApplications().find((app) => app.id === id);
+  getApplicationById(id: string): Observable<Application> {
+    return this.http.get<Application>(`${this.apiUrl}/${id}`);
   }
 
-  addApplication(application: Omit<JobApplication, 'id' | 'createdAt'>): void {
-    const applications = this.getApplications();
-
-    const newApplication: JobApplication = {
-      ...application,
-      id: crypto.randomUUID(),
-      createdAt: new Date().toISOString(),
-    };
-
-    applications.push(newApplication);
-    this.saveApplications(applications);
+  addApplication(application: Application): Observable<Application> {
+    return this.http.post<Application>(this.apiUrl, application);
   }
 
   updateApplication(
     id: string,
-    updatedApplication: Omit<JobApplication, 'id' | 'createdAt'>
-  ): void {
-    const applications = this.getApplications();
-
-    const updatedApplications = applications.map((app) => {
-      if (app.id === id) {
-        return {
-          ...app,
-          ...updatedApplication,
-        };
-      }
-
-      return app;
-    });
-
-    this.saveApplications(updatedApplications);
+    application: Partial<Application>
+  ): Observable<Application> {
+    return this.http.put<Application>(`${this.apiUrl}/${id}`, application);
   }
 
-  deleteApplication(id: string): void {
-    const applications = this.getApplications().filter((app) => app.id !== id);
-    this.saveApplications(applications);
-  }
-
-  private saveApplications(applications: JobApplication[]): void {
-    localStorage.setItem(this.storageKey, JSON.stringify(applications));
+  deleteApplication(id: string): Observable<{ message: string }> {
+    return this.http.delete<{ message: string }>(`${this.apiUrl}/${id}`);
   }
 }

@@ -1,8 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {
-  JobApplication,
-  ApplicationStatus,
-} from 'src/app/models/job-application';
+import { Application, ApplicationStatus } from 'src/app/models/job-application';
 import { ApplicationService } from 'src/app/services/application.service';
 
 @Component({
@@ -11,7 +8,7 @@ import { ApplicationService } from 'src/app/services/application.service';
   styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit {
-  applications: JobApplication[] = [];
+  applications: Application[] = [];
 
   statusChartGradient = '';
 
@@ -41,59 +38,66 @@ export class DashboardComponent implements OnInit {
   }
 
   loadDashboardData(): void {
-    this.applications = this.applicationService.getApplications();
+    this.applicationService.getApplications().subscribe({
+      next: (data) => {
+        this.applications = data;
 
-    this.totalApplications = this.applications.length;
+        this.totalApplications = this.applications.length;
 
-    this.appliedCount = this.getStatusCount('Applied');
-    this.interviewCount = this.getStatusCount('Interview');
-    this.offerCount = this.getStatusCount('Offer');
-    this.rejectedCount = this.getStatusCount('Rejected');
-    this.savedCount = this.getStatusCount('Saved');
+        this.appliedCount = this.getStatusCount('Applied');
+        this.interviewCount = this.getStatusCount('Interview');
+        this.offerCount = this.getStatusCount('Offer');
+        this.rejectedCount = this.getStatusCount('Rejected');
+        this.savedCount = this.getStatusCount('Saved');
 
-    this.interviewRate = this.getRate(this.interviewCount);
-    this.offerRate = this.getRate(this.offerCount);
-    this.rejectionRate = this.getRate(this.rejectedCount);
+        this.interviewRate = this.getRate(this.interviewCount);
+        this.offerRate = this.getRate(this.offerCount);
+        this.rejectionRate = this.getRate(this.rejectedCount);
 
-    this.statusOverview = [
-      {
-        label: 'Applied',
-        count: this.appliedCount,
-        percentage: this.getRate(this.appliedCount),
-        barClass: 'bg-blue-500',
-        textClass: 'text-blue-700',
-      },
-      {
-        label: 'Interview',
-        count: this.interviewCount,
-        percentage: this.getRate(this.interviewCount),
-        barClass: 'bg-purple-500',
-        textClass: 'text-purple-700',
-      },
-      {
-        label: 'Offer',
-        count: this.offerCount,
-        percentage: this.getRate(this.offerCount),
-        barClass: 'bg-green-500',
-        textClass: 'text-green-700',
-      },
-      {
-        label: 'Rejected',
-        count: this.rejectedCount,
-        percentage: this.getRate(this.rejectedCount),
-        barClass: 'bg-red-500',
-        textClass: 'text-red-700',
-      },
-      {
-        label: 'Saved',
-        count: this.savedCount,
-        percentage: this.getRate(this.savedCount),
-        barClass: 'bg-slate-500',
-        textClass: 'text-slate-700',
-      },
-    ];
+        this.statusOverview = [
+          {
+            label: 'Applied',
+            count: this.appliedCount,
+            percentage: this.getRate(this.appliedCount),
+            barClass: 'bg-blue-500',
+            textClass: 'text-blue-700',
+          },
+          {
+            label: 'Interview',
+            count: this.interviewCount,
+            percentage: this.getRate(this.interviewCount),
+            barClass: 'bg-purple-500',
+            textClass: 'text-purple-700',
+          },
+          {
+            label: 'Offer',
+            count: this.offerCount,
+            percentage: this.getRate(this.offerCount),
+            barClass: 'bg-green-500',
+            textClass: 'text-green-700',
+          },
+          {
+            label: 'Rejected',
+            count: this.rejectedCount,
+            percentage: this.getRate(this.rejectedCount),
+            barClass: 'bg-red-500',
+            textClass: 'text-red-700',
+          },
+          {
+            label: 'Saved',
+            count: this.savedCount,
+            percentage: this.getRate(this.savedCount),
+            barClass: 'bg-slate-500',
+            textClass: 'text-slate-700',
+          },
+        ];
 
-    this.statusChartGradient = this.getStatusChartGradient();
+        this.statusChartGradient = this.getStatusChartGradient();
+      },
+      error: (err) => {
+        console.error('Dashboard data could not be loaded', err);
+      },
+    });
   }
 
   getStatusCount(status: ApplicationStatus): number {
@@ -135,7 +139,7 @@ export class DashboardComponent implements OnInit {
     return `conic-gradient(${gradientParts.join(', ')})`;
   }
 
-  get recentApplications(): JobApplication[] {
+  get recentApplications(): Application[] {
     return this.applications.slice(-5).reverse();
   }
 }

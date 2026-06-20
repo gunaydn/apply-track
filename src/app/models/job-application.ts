@@ -4,15 +4,16 @@ export type ApplicationStatus =
   | 'Offer'
   | 'Rejected'
   | 'Saved';
-
-export interface JobApplication {
-  id: string;
+export interface Application {
+  _id?: string;
   companyName: string;
   position: string;
+  location?: string;
   status: ApplicationStatus;
   applicationDate: string;
-  location?: string;
+  followUpDate?: string;
   jobUrl?: string;
   notes?: string;
-  createdAt: string;
+  createdAt?: string;
+  updatedAt?: string;
 }

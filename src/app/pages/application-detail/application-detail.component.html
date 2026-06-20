@@ -37,8 +37,8 @@
           <!-- MOBILE ICON ACTIONS -->
           <div class="md:hidden shrink-0 flex items-center gap-1">
             <a
-              [routerLink]="['/applications/edit', application.id]"
-              [queryParams]="{ returnUrl: '/applications/' + application.id }"
+              [routerLink]="['/applications/edit', application._id]"
+              [queryParams]="{ returnUrl: '/applications/' + application._id }"
               title="Edit"
               class="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition"
             >
@@ -88,8 +88,8 @@
       <!-- DESKTOP ACTIONS -->
       <div class="hidden md:flex items-center gap-2">
         <a
-          [routerLink]="['/applications/edit', application.id]"
-          [queryParams]="{ returnUrl: '/applications/' + application.id }"
+          [routerLink]="['/applications/edit', application._id]"
+          [queryParams]="{ returnUrl: '/applications/' + application._id }"
           class="h-10 px-5 inline-flex items-center rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-100 transition"
         >
           Edit

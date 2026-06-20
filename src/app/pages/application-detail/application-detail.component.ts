@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { JobApplication } from 'src/app/models/job-application';
+import { Application } from 'src/app/models/job-application';
 import { ApplicationService } from 'src/app/services/application.service';
 
 @Component({
@@ -9,7 +9,7 @@ import { ApplicationService } from 'src/app/services/application.service';
   styleUrls: ['./application-detail.component.scss'],
 })
 export class ApplicationDetailComponent implements OnInit {
-  application: JobApplication | undefined;
+  application: Application | undefined;
 
   constructor(
     private route: ActivatedRoute,
@@ -25,11 +25,15 @@ export class ApplicationDetailComponent implements OnInit {
       return;
     }
 
-    this.application = this.applicationService.getApplicationById(id);
-
-    if (!this.application) {
-      this.router.navigate(['/applications']);
-    }
+    this.applicationService.getApplicationById(id).subscribe({
+      next: (application) => {
+        this.application = application;
+      },
+      error: (err) => {
+        console.error('Application could not be loaded', err);
+        this.router.navigate(['/applications']);
+      },
+    });
   }
 
   deleteApplication(): void {
@@ -43,8 +47,21 @@ export class ApplicationDetailComponent implements OnInit {
       return;
     }
 
-    this.applicationService.deleteApplication(this.application.id);
-    this.router.navigate(['/applications']);
+    const applicationId = this.application._id;
+
+    if (!applicationId) {
+      console.error('Application id not found');
+      return;
+    }
+
+    this.applicationService.deleteApplication(applicationId).subscribe({
+      next: () => {
+        this.router.navigate(['/applications']);
+      },
+      error: (err) => {
+        console.error('Application could not be deleted', err);
+      },
+    });
   }
 
   getStatusClass(status: string): string {
