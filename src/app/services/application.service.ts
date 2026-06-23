@@ -31,6 +31,12 @@ export class ApplicationService {
     return this.http.put<Application>(`${this.apiUrl}/${id}`, application);
   }
 
+  markFollowUpCompleted(id: string): Observable<Application> {
+    return this.http.put<Application>(`${this.apiUrl}/${id}`, {
+      followUpCompleted: true,
+    });
+  }
+
   deleteApplication(id: string): Observable<{ message: string }> {
     return this.http.delete<{ message: string }>(`${this.apiUrl}/${id}`);
   }

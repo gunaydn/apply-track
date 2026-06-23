@@ -123,6 +123,84 @@
     </a>
   </div>
 
+  <!-- MOBILE FOLLOW-UP SUMMARY -->
+  <div class="md:hidden bg-white rounded-2xl shadow p-4">
+    <div class="flex items-start justify-between gap-4">
+      <div>
+        <h3 class="text-base font-bold text-slate-900">Follow-ups</h3>
+        <p class="text-xs text-slate-500 mt-0.5">
+          Applications that need your attention.
+        </p>
+      </div>
+
+      <span
+        *ngIf="pendingFollowUps.length > 0"
+        class="shrink-0 px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 text-[11px] font-medium"
+      >
+        {{ pendingFollowUps.length }} pending
+      </span>
+    </div>
+
+    <div
+      *ngIf="pendingFollowUps.length === 0"
+      class="mt-4 rounded-xl bg-slate-50 p-3"
+    >
+      <p class="text-sm text-slate-400">No pending follow-ups.</p>
+    </div>
+
+    <div *ngIf="pendingFollowUps.length > 0" class="mt-4 space-y-3">
+      <a
+        *ngIf="nextFollowUp"
+        [routerLink]="['/applications', nextFollowUp._id]"
+        class="block rounded-xl bg-slate-900 p-4 text-white"
+      >
+        <div class="flex items-start justify-between gap-3">
+          <div class="min-w-0">
+            <p class="text-[11px] text-slate-300">Next follow-up</p>
+
+            <h4 class="font-bold text-white mt-1 truncate">
+              {{ nextFollowUp.companyName }}
+            </h4>
+
+            <p class="text-xs text-slate-300 mt-0.5 truncate">
+              {{ nextFollowUp.followUpNote || "No note added." }}
+            </p>
+          </div>
+
+          <span
+            class="shrink-0 px-2 py-1 rounded-lg text-[11px] font-semibold"
+            [ngClass]="getFollowUpStatusClass(nextFollowUp)"
+          >
+            {{ getFollowUpLabel(nextFollowUp) }}
+          </span>
+        </div>
+      </a>
+
+      <div class="grid grid-cols-3 gap-2">
+        <div class="rounded-xl bg-red-50 p-3">
+          <p class="text-[10px] text-slate-500">Overdue</p>
+          <p class="text-xl font-bold text-red-700 mt-0.5">
+            {{ overdueFollowUps.length }}
+          </p>
+        </div>
+
+        <div class="rounded-xl bg-amber-50 p-3">
+          <p class="text-[10px] text-slate-500">Today</p>
+          <p class="text-xl font-bold text-amber-700 mt-0.5">
+            {{ todayFollowUps.length }}
+          </p>
+        </div>
+
+        <div class="rounded-xl bg-blue-50 p-3">
+          <p class="text-[10px] text-slate-500">Upcoming</p>
+          <p class="text-xl font-bold text-blue-700 mt-0.5">
+            {{ upcomingFollowUps.length }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- DESKTOP STATUS + METRICS -->
   <div class="hidden md:grid grid-cols-1 xl:grid-cols-3 gap-6">
     <!-- DESKTOP STATUS OVERVIEW -->
@@ -181,6 +259,212 @@
       </div>
     </div>
 
+    <!-- DESKTOP FOLLOW-UPS -->
+    <div class="bg-white rounded-2xl shadow p-5 sm:p-6">
+      <div class="flex items-start justify-between gap-4 mb-5">
+        <div>
+          <h3 class="text-xl font-bold text-slate-900">Follow-ups</h3>
+          <p class="text-sm text-slate-500 mt-1">Applications to revisit.</p>
+        </div>
+
+        <span
+          class="shrink-0 px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-medium"
+        >
+          {{ pendingFollowUps.length }} pending
+        </span>
+      </div>
+
+      <div class="grid grid-cols-3 gap-2 mb-4">
+        <div class="rounded-xl bg-red-50 p-3">
+          <p class="text-[11px] text-slate-500">Overdue</p>
+          <p class="text-xl font-bold text-red-700 mt-1">
+            {{ overdueFollowUps.length }}
+          </p>
+        </div>
+
+        <div class="rounded-xl bg-amber-50 p-3">
+          <p class="text-[11px] text-slate-500">Today</p>
+          <p class="text-xl font-bold text-amber-700 mt-1">
+            {{ todayFollowUps.length }}
+          </p>
+        </div>
+
+        <div class="rounded-xl bg-blue-50 p-3">
+          <p class="text-[11px] text-slate-500">Upcoming</p>
+          <p class="text-xl font-bold text-blue-700 mt-1">
+            {{ upcomingFollowUps.length }}
+          </p>
+        </div>
+      </div>
+
+      <div
+        *ngIf="pendingFollowUps.length === 0"
+        class="rounded-xl bg-slate-50 p-4"
+      >
+        <p class="text-sm text-slate-400">No pending follow-ups.</p>
+      </div>
+
+      <a
+        *ngIf="nextFollowUp"
+        [routerLink]="['/applications', nextFollowUp._id]"
+        class="block rounded-xl border border-slate-200 p-4 hover:bg-slate-50 transition"
+      >
+        <div class="flex items-start justify-between gap-3">
+          <div class="min-w-0">
+            <p class="text-xs text-slate-400">Next</p>
+
+            <h4 class="font-semibold text-slate-900 mt-1 truncate">
+              {{ nextFollowUp.companyName }}
+            </h4>
+
+            <p class="text-sm text-slate-500 mt-0.5 truncate">
+              {{ nextFollowUp.followUpNote || "No note added." }}
+            </p>
+          </div>
+
+          <span
+            class="shrink-0 px-2 py-1 rounded-lg text-xs font-medium"
+            [ngClass]="getFollowUpStatusClass(nextFollowUp)"
+          >
+            {{ getFollowUpLabel(nextFollowUp) }}
+          </span>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <!-- MOBILE SUCCESS METRICS -->
+  <div class="md:hidden bg-white rounded-2xl shadow p-4">
+    <div class="flex items-center justify-between mb-4">
+      <div>
+        <h3 class="text-base font-bold text-slate-900">Success Metrics</h3>
+        <p class="text-xs text-slate-500 mt-0.5">
+          Quick performance indicators.
+        </p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-3 gap-3">
+      <div class="rounded-xl bg-purple-50 p-3">
+        <p class="text-[11px] text-slate-500">Interview</p>
+        <p class="text-xl font-bold text-purple-700 mt-1">
+          {{ interviewRate }}%
+        </p>
+      </div>
+
+      <div class="rounded-xl bg-green-50 p-3">
+        <p class="text-[11px] text-slate-500">Offer</p>
+        <p class="text-xl font-bold text-green-700 mt-1">{{ offerRate }}%</p>
+      </div>
+
+      <div class="rounded-xl bg-red-50 p-3">
+        <p class="text-[11px] text-slate-500">Rejected</p>
+        <p class="text-xl font-bold text-red-700 mt-1">{{ rejectionRate }}%</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- MOBILE RECENT APPLICATIONS -->
+  <div class="md:hidden bg-white rounded-2xl shadow p-5 sm:p-6">
+    <div
+      class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-5"
+    >
+      <div>
+        <h3 class="text-xl font-bold text-slate-900">Recent Applications</h3>
+        <p class="text-slate-500 text-sm">Your latest job applications.</p>
+      </div>
+
+      <a
+        routerLink="/applications"
+        class="text-sm font-medium text-slate-700 hover:text-slate-900"
+      >
+        View all
+      </a>
+    </div>
+
+    <div *ngIf="recentApplications.length === 0" class="text-slate-500">
+      No applications yet.
+    </div>
+
+    <div *ngIf="recentApplications.length > 0" class="space-y-3">
+      <a
+        *ngFor="let app of recentApplications"
+        [routerLink]="['/applications', app._id]"
+        class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border border-slate-200 rounded-xl p-4 hover:bg-slate-50 transition"
+      >
+        <div>
+          <h4 class="font-semibold text-slate-900">
+            {{ app.companyName }}
+          </h4>
+
+          <p class="text-sm text-slate-500">
+            {{ app.position }} · {{ app.applicationDate }}
+          </p>
+        </div>
+
+        <span
+          class="self-start sm:self-auto text-sm font-medium text-slate-700"
+        >
+          {{ app.status }}
+        </span>
+      </a>
+    </div>
+  </div>
+
+  <!-- DESKTOP RECENT + FOLLOW-UPS + QUICK ACTIONS -->
+  <div class="hidden md:grid grid-cols-1 xl:grid-cols-3 gap-6">
+    <!-- DESKTOP RECENT APPLICATIONS -->
+    <div class="bg-white rounded-2xl shadow p-5 sm:p-6">
+      <div class="flex items-center justify-between gap-4 mb-5">
+        <div>
+          <h3 class="text-xl font-bold text-slate-900">Recent Applications</h3>
+          <p class="text-sm text-slate-500 mt-1">Latest tracked jobs.</p>
+        </div>
+
+        <a
+          routerLink="/applications"
+          class="text-sm font-medium text-slate-700 hover:text-slate-900"
+        >
+          View all
+        </a>
+      </div>
+
+      <div
+        *ngIf="compactRecentApplications.length === 0"
+        class="text-slate-500"
+      >
+        No applications yet.
+      </div>
+
+      <div *ngIf="compactRecentApplications.length > 0" class="space-y-3">
+        <a
+          *ngFor="let app of compactRecentApplications"
+          [routerLink]="['/applications', app._id]"
+          class="block rounded-xl border border-slate-200 p-4 hover:bg-slate-50 transition"
+        >
+          <div class="flex items-start justify-between gap-3">
+            <div class="min-w-0">
+              <h4 class="font-semibold text-slate-900 truncate">
+                {{ app.companyName }}
+              </h4>
+
+              <p class="text-sm text-slate-500 mt-0.5 truncate">
+                {{ app.position }}
+              </p>
+            </div>
+
+            <span class="shrink-0 text-xs font-medium text-slate-500">
+              {{ app.status }}
+            </span>
+          </div>
+
+          <p class="text-xs text-slate-400 mt-3">
+            {{ app.applicationDate }}
+          </p>
+        </a>
+      </div>
+    </div>
+
     <!-- DESKTOP SUCCESS METRICS -->
     <div class="bg-white rounded-2xl shadow p-5 sm:p-6">
       <h3 class="text-xl font-bold text-slate-900">Success Metrics</h3>
@@ -226,91 +510,9 @@
         </div>
       </div>
     </div>
-  </div>
-
-  <!-- MOBILE SUCCESS METRICS -->
-  <div class="md:hidden bg-white rounded-2xl shadow p-4">
-    <div class="flex items-center justify-between mb-4">
-      <div>
-        <h3 class="text-base font-bold text-slate-900">Success Metrics</h3>
-        <p class="text-xs text-slate-500 mt-0.5">
-          Quick performance indicators.
-        </p>
-      </div>
-    </div>
-
-    <div class="grid grid-cols-3 gap-3">
-      <div class="rounded-xl bg-purple-50 p-3">
-        <p class="text-[11px] text-slate-500">Interview</p>
-        <p class="text-xl font-bold text-purple-700 mt-1">
-          {{ interviewRate }}%
-        </p>
-      </div>
-
-      <div class="rounded-xl bg-green-50 p-3">
-        <p class="text-[11px] text-slate-500">Offer</p>
-        <p class="text-xl font-bold text-green-700 mt-1">{{ offerRate }}%</p>
-      </div>
-
-      <div class="rounded-xl bg-red-50 p-3">
-        <p class="text-[11px] text-slate-500">Rejected</p>
-        <p class="text-xl font-bold text-red-700 mt-1">{{ rejectionRate }}%</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- RECENT + DESKTOP QUICK ACTIONS -->
-  <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
-    <!-- RECENT APPLICATIONS -->
-    <div class="xl:col-span-2 bg-white rounded-2xl shadow p-5 sm:p-6">
-      <div
-        class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-5"
-      >
-        <div>
-          <h3 class="text-xl font-bold text-slate-900">Recent Applications</h3>
-
-          <p class="text-slate-500 text-sm">Your latest job applications.</p>
-        </div>
-
-        <a
-          routerLink="/applications"
-          class="text-sm font-medium text-slate-700 hover:text-slate-900"
-        >
-          View all
-        </a>
-      </div>
-
-      <div *ngIf="recentApplications.length === 0" class="text-slate-500">
-        No applications yet.
-      </div>
-
-      <div *ngIf="recentApplications.length > 0" class="space-y-3">
-        <a
-          *ngFor="let app of recentApplications"
-          [routerLink]="['/applications', app._id]"
-          class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border border-slate-200 rounded-xl p-4 hover:bg-slate-50 transition"
-        >
-          <div>
-            <h4 class="font-semibold text-slate-900">
-              {{ app.companyName }}
-            </h4>
-
-            <p class="text-sm text-slate-500">
-              {{ app.position }} · {{ app.applicationDate }}
-            </p>
-          </div>
-
-          <span
-            class="self-start sm:self-auto text-sm font-medium text-slate-700"
-          >
-            {{ app.status }}
-          </span>
-        </a>
-      </div>
-    </div>
 
     <!-- DESKTOP QUICK ACTIONS -->
-    <div class="hidden md:block bg-white rounded-2xl shadow p-5 sm:p-6">
+    <div class="bg-white rounded-2xl shadow p-5 sm:p-6">
       <h3 class="text-xl font-bold text-slate-900">Quick Actions</h3>
 
       <p class="text-sm text-slate-500 mt-1 mb-6">Jump into common actions.</p>

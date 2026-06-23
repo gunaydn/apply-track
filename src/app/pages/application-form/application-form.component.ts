@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Location } from '@angular/common';
+
 import { ApplicationService } from 'src/app/services/application.service';
 import { ApplicationStatus } from 'src/app/models/job-application';
-import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-application-form',
@@ -22,6 +23,7 @@ export class ApplicationFormComponent implements OnInit {
   isEditMode = false;
   returnUrl = '/applications';
   applicationId: string | null = null;
+  currentFollowUpCompleted = false;
 
   applicationForm = this.fb.group({
     companyName: ['', Validators.required],
@@ -30,6 +32,8 @@ export class ApplicationFormComponent implements OnInit {
     applicationDate: ['', Validators.required],
     location: [''],
     jobUrl: [''],
+    followUpDate: [''],
+    followUpNote: [''],
     notes: [''],
   });
 
@@ -56,6 +60,9 @@ export class ApplicationFormComponent implements OnInit {
 
       this.applicationService.getApplicationById(this.applicationId).subscribe({
         next: (application) => {
+          this.currentFollowUpCompleted =
+            application.followUpCompleted || false;
+
           this.applicationForm.patchValue({
             companyName: application.companyName,
             position: application.position,
@@ -63,6 +70,8 @@ export class ApplicationFormComponent implements OnInit {
             applicationDate: application.applicationDate,
             location: application.location || '',
             jobUrl: application.jobUrl || '',
+            followUpDate: application.followUpDate || '',
+            followUpNote: application.followUpNote || '',
             notes: application.notes || '',
           });
         },
@@ -89,6 +98,9 @@ export class ApplicationFormComponent implements OnInit {
       applicationDate: formValue.applicationDate!,
       location: formValue.location || '',
       jobUrl: formValue.jobUrl || '',
+      followUpDate: formValue.followUpDate || '',
+      followUpNote: formValue.followUpNote || '',
+      followUpCompleted: this.currentFollowUpCompleted,
       notes: formValue.notes || '',
     };
 

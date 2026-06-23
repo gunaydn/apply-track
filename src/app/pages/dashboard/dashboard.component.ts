@@ -23,6 +23,12 @@ export class DashboardComponent implements OnInit {
   offerRate = 0;
   rejectionRate = 0;
 
+  pendingFollowUps: Application[] = [];
+  overdueFollowUps: Application[] = [];
+  todayFollowUps: Application[] = [];
+  upcomingFollowUps: Application[] = [];
+  nextFollowUp: Application | null = null;
+
   statusOverview: {
     label: ApplicationStatus;
     count: number;
@@ -93,11 +99,44 @@ export class DashboardComponent implements OnInit {
         ];
 
         this.statusChartGradient = this.getStatusChartGradient();
+
+        this.loadFollowUpData();
       },
       error: (err) => {
         console.error('Dashboard data could not be loaded', err);
       },
     });
+  }
+
+  loadFollowUpData(): void {
+    const today = this.getDateOnly(new Date());
+
+    const activeFollowUps = this.applications
+      .filter((app) => app.followUpDate && !app.followUpCompleted)
+      .sort(
+        (a, b) =>
+          new Date(a.followUpDate!).getTime() -
+          new Date(b.followUpDate!).getTime()
+      );
+
+    this.pendingFollowUps = activeFollowUps;
+
+    this.overdueFollowUps = activeFollowUps.filter((app) => {
+      const followUpDate = this.getDateOnly(new Date(app.followUpDate!));
+      return followUpDate < today;
+    });
+
+    this.todayFollowUps = activeFollowUps.filter((app) => {
+      const followUpDate = this.getDateOnly(new Date(app.followUpDate!));
+      return followUpDate.getTime() === today.getTime();
+    });
+
+    this.upcomingFollowUps = activeFollowUps.filter((app) => {
+      const followUpDate = this.getDateOnly(new Date(app.followUpDate!));
+      return followUpDate > today;
+    });
+
+    this.nextFollowUp = activeFollowUps[0] || null;
   }
 
   getStatusCount(status: ApplicationStatus): number {
@@ -110,6 +149,57 @@ export class DashboardComponent implements OnInit {
     }
 
     return Math.round((count / this.totalApplications) * 100);
+  }
+
+  getDateOnly(date: Date): Date {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  }
+
+  getFollowUpLabel(app: Application): string {
+    if (!app.followUpDate) {
+      return '';
+    }
+
+    const today = this.getDateOnly(new Date());
+    const followUpDate = this.getDateOnly(new Date(app.followUpDate));
+
+    const diffTime = followUpDate.getTime() - today.getTime();
+    const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
+
+    if (diffDays < 0) {
+      return `${Math.abs(diffDays)} day${
+        Math.abs(diffDays) > 1 ? 's' : ''
+      } overdue`;
+    }
+
+    if (diffDays === 0) {
+      return 'Due today';
+    }
+
+    if (diffDays === 1) {
+      return 'Tomorrow';
+    }
+
+    return `In ${diffDays} days`;
+  }
+
+  getFollowUpStatusClass(app: Application): string {
+    if (!app.followUpDate) {
+      return 'bg-slate-100 text-slate-600';
+    }
+
+    const today = this.getDateOnly(new Date());
+    const followUpDate = this.getDateOnly(new Date(app.followUpDate));
+
+    if (followUpDate < today) {
+      return 'bg-red-100 text-red-700';
+    }
+
+    if (followUpDate.getTime() === today.getTime()) {
+      return 'bg-amber-100 text-amber-700';
+    }
+
+    return 'bg-blue-100 text-blue-700';
   }
 
   getStatusChartGradient(): string {
@@ -140,6 +230,10 @@ export class DashboardComponent implements OnInit {
   }
 
   get recentApplications(): Application[] {
-    return this.applications.slice(-5).reverse();
+    return this.applications.slice(0, 5);
+  }
+
+  get compactRecentApplications(): Application[] {
+    return this.applications.slice(0, 3);
   }
 }

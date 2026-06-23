@@ -80,4 +80,21 @@ export class ApplicationDetailComponent implements OnInit {
         return 'bg-slate-100 text-slate-700';
     }
   }
+
+  markFollowUpCompleted(): void {
+    if (!this.application?._id) {
+      return;
+    }
+
+    this.applicationService
+      .markFollowUpCompleted(this.application._id)
+      .subscribe({
+        next: (updatedApplication) => {
+          this.application = updatedApplication;
+        },
+        error: (err) => {
+          console.error('Follow-up could not be marked as completed', err);
+        },
+      });
+  }
 }

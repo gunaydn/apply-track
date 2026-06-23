@@ -6,14 +6,20 @@ export type ApplicationStatus =
   | 'Saved';
 export interface Application {
   _id?: string;
+
   companyName: string;
   position: string;
   location?: string;
   status: ApplicationStatus;
   applicationDate: string;
+
   followUpDate?: string;
+  followUpNote?: string;
+  followUpCompleted?: boolean;
+
   jobUrl?: string;
   notes?: string;
+
   createdAt?: string;
   updatedAt?: string;
 }
