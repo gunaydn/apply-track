@@ -546,3 +546,77 @@
     </div>
   </div>
 </div>
+
+<!-- NOTIFICATION PERMISSION POPUP -->
+<div
+  *ngIf="showNotificationPrompt"
+  class="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-slate-900/40 backdrop-blur-sm px-4 py-5"
+>
+  <div
+    class="w-full max-w-md rounded-t-3xl md:rounded-3xl bg-white shadow-2xl border border-white/60 p-5 md:p-6"
+  >
+    <!-- HEADER -->
+    <div class="flex items-start gap-4">
+      <div
+        class="shrink-0 w-11 h-11 rounded-2xl bg-slate-900 text-white flex items-center justify-center shadow-sm"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="w-5 h-5"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M18 8a6 6 0 10-12 0c0 7-3 7-3 7h18s-3 0-3-7" />
+          <path d="M13.73 21a2 2 0 01-3.46 0" />
+        </svg>
+      </div>
+
+      <div class="min-w-0">
+        <h3 class="text-lg md:text-xl font-bold text-slate-900">
+          Enable follow-up reminders?
+        </h3>
+
+        <p class="text-sm text-slate-500 mt-1 leading-relaxed">
+          ApplyTrack can notify you when a follow-up date is due, so you do not
+          miss important next steps.
+        </p>
+      </div>
+    </div>
+
+    <!-- INFO BOX -->
+    <div class="mt-5 rounded-2xl bg-slate-50 border border-slate-100 p-4">
+      <div class="flex items-start gap-3">
+        <span class="mt-1.5 h-2 w-2 rounded-full bg-amber-500 shrink-0"></span>
+
+        <p class="text-sm text-slate-600 leading-relaxed">
+          This setting is saved only for this browser. If you open ApplyTrack
+          from another device or browser, we will ask again there.
+        </p>
+      </div>
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-3">
+      <button
+        type="button"
+        (click)="declineNotificationPrompt()"
+        class="order-2 md:order-1 h-11 inline-flex items-center justify-center rounded-xl border border-slate-300 text-slate-700 text-sm font-medium hover:bg-slate-100 transition"
+      >
+        Not now
+      </button>
+
+      <button
+        type="button"
+        (click)="enableReminders()"
+        [disabled]="isEnablingNotifications"
+        class="order-1 md:order-2 h-11 inline-flex items-center justify-center rounded-xl bg-slate-900 text-white text-sm font-medium hover:bg-slate-700 disabled:opacity-60 disabled:cursor-not-allowed transition"
+      >
+        {{ isEnablingNotifications ? "Enabling..." : "Enable reminders" }}
+      </button>
+    </div>
+  </div>
+</div>

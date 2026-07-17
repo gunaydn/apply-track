@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Application, ApplicationStatus } from 'src/app/models/job-application';
 import { ApplicationService } from 'src/app/services/application.service';
+import { NotificationService } from 'src/app/services/notification.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -11,6 +12,9 @@ export class DashboardComponent implements OnInit {
   applications: Application[] = [];
 
   statusChartGradient = '';
+
+  showNotificationPrompt = false;
+  isEnablingNotifications = false;
 
   totalApplications = 0;
   appliedCount = 0;
@@ -37,10 +41,14 @@ export class DashboardComponent implements OnInit {
     textClass: string;
   }[] = [];
 
-  constructor(private applicationService: ApplicationService) {}
+  constructor(
+    private applicationService: ApplicationService,
+    private notificationService: NotificationService
+  ) {}
 
   ngOnInit(): void {
     this.loadDashboardData();
+    this.checkNotificationPrompt();
   }
 
   loadDashboardData(): void {
@@ -235,5 +243,35 @@ export class DashboardComponent implements OnInit {
 
   get compactRecentApplications(): Application[] {
     return this.applications.slice(0, 3);
+  }
+
+  checkNotificationPrompt(): void {
+    setTimeout(() => {
+      console.log('Prompt status:', this.notificationService.getPromptStatus());
+      console.log('Browser permission:', Notification.permission);
+
+      this.showNotificationPrompt =
+        this.notificationService.shouldShowNotificationPrompt();
+
+      console.log('Show popup:', this.showNotificationPrompt);
+    }, 800);
+  }
+
+  async enableReminders(): Promise<void> {
+    this.isEnablingNotifications = true;
+
+    const success =
+      await this.notificationService.requestPermissionAndRegisterToken();
+
+    this.isEnablingNotifications = false;
+
+    if (success) {
+      this.showNotificationPrompt = false;
+    }
+  }
+
+  declineNotificationPrompt(): void {
+    this.notificationService.markPromptDeclined();
+    this.showNotificationPrompt = false;
   }
 }
