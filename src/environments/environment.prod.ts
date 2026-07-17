@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  apiUrl: 'http://localhost:3000',
+  apiUrl: 'https://api-production-0b1da.up.railway.app',
   firebase: {
     apiKey: 'AIzaSyBZWCvbuVhhbWp9zKkhGBub68fuBkCs0g4',
     authDomain: 'apply-track-21510.firebaseapp.com',
