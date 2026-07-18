@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { AuthService } from 'src/app/services/auth.service';
 
@@ -21,7 +21,8 @@ export class LoginComponent {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   onSubmit(): void {
@@ -43,7 +44,14 @@ export class LoginComponent {
       .subscribe({
         next: (response) => {
           this.authService.saveAuthData(response);
-          this.router.navigate(['/dashboard']);
+
+          const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+          const safeReturnUrl =
+            returnUrl && returnUrl.startsWith('/') && !returnUrl.startsWith('//')
+              ? returnUrl
+              : '/';
+
+          this.router.navigateByUrl(safeReturnUrl);
         },
         error: (err) => {
           console.error('Login failed', err);

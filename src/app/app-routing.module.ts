@@ -4,13 +4,34 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { ApplicationsComponent } from './pages/applications/applications.component';
 import { ApplicationFormComponent } from './pages/application-form/application-form.component';
 import { ApplicationDetailComponent } from './pages/application-detail/application-detail.component';
+import { AuthGuard } from './guards/auth.guard';
 
 const routes: Routes = [
-  { path: '', component: DashboardComponent },
-  { path: 'applications', component: ApplicationsComponent },
-  { path: 'applications/new', component: ApplicationFormComponent },
-  { path: 'applications/edit/:id', component: ApplicationFormComponent },
-  { path: 'applications/:id', component: ApplicationDetailComponent },
+  {
+    path: '',
+    component: DashboardComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'applications',
+    component: ApplicationsComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'applications/new',
+    component: ApplicationFormComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'applications/edit/:id',
+    component: ApplicationFormComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'applications/:id',
+    component: ApplicationDetailComponent,
+    canActivate: [AuthGuard],
+  },
   {
     path: 'auth',
     loadChildren: () =>

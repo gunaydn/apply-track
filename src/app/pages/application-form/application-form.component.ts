@@ -51,7 +51,11 @@ export class ApplicationFormComponent implements OnInit {
     const returnUrlFromQuery =
       this.route.snapshot.queryParamMap.get('returnUrl');
 
-    if (returnUrlFromQuery) {
+    if (
+      returnUrlFromQuery &&
+      returnUrlFromQuery.startsWith('/') &&
+      !returnUrlFromQuery.startsWith('//')
+    ) {
       this.returnUrl = returnUrlFromQuery;
     }
 

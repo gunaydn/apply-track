@@ -16,6 +16,10 @@ export class AppComponent implements OnInit {
 
   constructor(private router: Router, private authService: AuthService) {}
 
+  get isLoggedIn(): boolean {
+    return this.authService.isLoggedIn();
+  }
+
   ngOnInit(): void {
     this.closeMobileMenu();
 
@@ -24,7 +28,9 @@ export class AppComponent implements OnInit {
       .subscribe((event) => {
         const navigationEnd = event as NavigationEnd;
 
-        this.hideNavbar = navigationEnd.urlAfterRedirects.startsWith('/auth');
+        this.hideNavbar =
+          navigationEnd.urlAfterRedirects.startsWith('/auth') ||
+          !this.authService.isLoggedIn();
 
         this.closeMobileMenu();
       });
