@@ -3,14 +3,12 @@ frontend:
   phases:
     preBuild:
       commands:
-        # Do not use nvm install/use — Amplify image has no Node 18, and
-        # nvm install 20 fails while downloading from nodejs.org.
-        # Use the build image default Node (supports Angular 15 engines).
+        # Amplify default Node is v22; skip nvm (install/use were failing).
         - node -v
         - npm -v
         - rm -rf node_modules
-        # Amplify sets NODE_ENV=production; force Angular CLI (devDependency)
-        - NPM_CONFIG_PRODUCTION=false npm ci
+        # --include=dev is required under NODE_ENV=production (Angular CLI is a devDependency)
+        - npm ci --include=dev
     build:
       commands:
         - npm run build -- --configuration production
