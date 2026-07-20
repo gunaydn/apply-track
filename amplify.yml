@@ -3,11 +3,11 @@ frontend:
   phases:
     preBuild:
       commands:
-        # Amplify default Node is v22; skip nvm (install/use were failing).
+        # Amplify default Node is v22.18 / npm 10.9 — skip nvm.
         - node -v
         - npm -v
         - rm -rf node_modules
-        # --include=dev is required under NODE_ENV=production (Angular CLI is a devDependency)
+        # NODE_ENV=production would skip Angular CLI; --include=dev keeps it.
         - npm ci --include=dev
     build:
       commands:
