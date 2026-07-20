@@ -1,5 +1,6 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
+import { SwUpdate, VersionReadyEvent } from '@angular/service-worker';
 import { filter } from 'rxjs';
 import { AuthService } from './services/auth.service';
 
@@ -14,7 +15,11 @@ export class AppComponent implements OnInit {
   hideNavbar = false;
   private lastScrollY = 0;
 
-  constructor(private router: Router, private authService: AuthService) {}
+  constructor(
+    private router: Router,
+    private authService: AuthService,
+    private swUpdate: SwUpdate
+  ) {}
 
   get isLoggedIn(): boolean {
     return this.authService.isLoggedIn();
@@ -22,6 +27,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.closeMobileMenu();
+    this.watchForAppUpdates();
 
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
@@ -34,6 +40,25 @@ export class AppComponent implements OnInit {
 
         this.closeMobileMenu();
       });
+  }
+
+  private watchForAppUpdates(): void {
+    if (!this.swUpdate.isEnabled) {
+      return;
+    }
+
+    this.swUpdate.versionUpdates
+      .pipe(
+        filter(
+          (event): event is VersionReadyEvent => event.type === 'VERSION_READY'
+        )
+      )
+      .subscribe(async () => {
+        await this.swUpdate.activateUpdate();
+        document.location.reload();
+      });
+
+    void this.swUpdate.checkForUpdate();
   }
 
   @HostListener('window:scroll', [])

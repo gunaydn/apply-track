@@ -8,15 +8,17 @@ import {
   RegisterRequest,
   AuthUser,
 } from '../models/auth.model';
-import { environment } from 'src/environments/environment';
+import { getApiBaseUrl } from '../config/api.config';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private apiUrl = `${environment.apiUrl}/auth`;
-
   constructor(private http: HttpClient) {}
+
+  private get apiUrl(): string {
+    return `${getApiBaseUrl()}/auth`;
+  }
 
   login(loginData: LoginRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/login`, loginData);
@@ -77,13 +79,14 @@ export class AuthService {
       }
 
       const padded = payloadPart + '='.repeat((4 - (payloadPart.length % 4)) % 4);
-      const payload = JSON.parse(atob(padded.replace(/-/g, '+').replace(/_/g, '/')));
+      const payload = JSON.parse(
+        atob(padded.replace(/-/g, '+').replace(/_/g, '/'))
+      );
 
       if (typeof payload.exp !== 'number') {
         return false;
       }
 
-      // Refresh a few seconds early to avoid edge races.
       return payload.exp * 1000 <= Date.now() + 5000;
     } catch {
       return true;
