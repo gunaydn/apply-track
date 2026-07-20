@@ -32,7 +32,10 @@ export class AuthInterceptor implements HttpInterceptor {
 
     return next.handle(authRequest).pipe(
       catchError((error: HttpErrorResponse) => {
-        if (error.status === 401 && !request.url.includes('/auth/')) {
+        // Only clear session on protected API 401s — never on login/register.
+        const isAuthEndpoint = /\/auth\/(login|register)\b/.test(request.url);
+
+        if (error.status === 401 && !isAuthEndpoint && this.authService.isLoggedIn()) {
           this.authService.logout();
           this.router.navigate(['/auth/login']);
         }
