@@ -34,12 +34,17 @@ export class LoginComponent {
     this.isLoading = true;
     this.errorMessage = '';
 
+    // Drop any stale session before attempting a fresh login.
+    this.authService.logout();
+
     const formValue = this.loginForm.getRawValue();
+    const email = formValue.email!.trim().toLowerCase();
+    const password = formValue.password!;
 
     this.authService
       .login({
-        email: formValue.email!,
-        password: formValue.password!,
+        email,
+        password,
       })
       .subscribe({
         next: (response) => {
@@ -55,8 +60,20 @@ export class LoginComponent {
         },
         error: (err) => {
           console.error('Login failed', err);
-          this.errorMessage = 'Email or password is incorrect.';
           this.isLoading = false;
+
+          if (err?.status === 0) {
+            this.errorMessage =
+              'Cannot reach the server. Check your connection and try again.';
+            return;
+          }
+
+          if (err?.status === 401) {
+            this.errorMessage = 'Email or password is incorrect.';
+            return;
+          }
+
+          this.errorMessage = 'Login failed. Please try again.';
         },
       });
   }

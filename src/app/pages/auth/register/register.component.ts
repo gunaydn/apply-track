@@ -34,12 +34,14 @@ export class RegisterComponent {
     this.isLoading = true;
     this.errorMessage = '';
 
+    this.authService.logout();
+
     const formValue = this.registerForm.getRawValue();
 
     this.authService
       .register({
-        fullName: formValue.fullName!,
-        email: formValue.email!,
+        fullName: formValue.fullName!.trim(),
+        email: formValue.email!.trim().toLowerCase(),
         password: formValue.password!,
       })
       .subscribe({

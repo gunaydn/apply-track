@@ -20,22 +20,27 @@ export class AuthInterceptor implements HttpInterceptor {
     request: HttpRequest<unknown>,
     next: HttpHandler
   ): Observable<HttpEvent<unknown>> {
+    const isAuthEndpoint = /\/auth\/(login|register)\b/.test(request.url);
     const token = this.authService.getToken();
 
-    const authRequest = token
-      ? request.clone({
-          setHeaders: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-      : request;
+    // Never attach a stale Bearer token to login/register.
+    const authRequest =
+      token && !isAuthEndpoint
+        ? request.clone({
+            setHeaders: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+        : request;
 
     return next.handle(authRequest).pipe(
       catchError((error: HttpErrorResponse) => {
-        // Only clear session on protected API 401s — never on login/register.
-        const isAuthEndpoint = /\/auth\/(login|register)\b/.test(request.url);
-
-        if (error.status === 401 && !isAuthEndpoint && this.authService.isLoggedIn()) {
+        if (
+          error.status === 401 &&
+          !isAuthEndpoint &&
+          !request.url.includes('/notifications/') &&
+          this.authService.isLoggedIn()
+        ) {
           this.authService.logout();
           this.router.navigate(['/auth/login']);
         }
