@@ -3,14 +3,13 @@ frontend:
   phases:
     preBuild:
       commands:
-        - nvm install 18
+        # Use Amplify image's preinstalled Node 18 (do not nvm install — can fail on AL2)
         - nvm use 18
         - node -v
-        - npm -v
-        # Bust stale Amplify cache that may omit Angular CLI (devDependency)
+        # Drop stale cache that may omit Angular CLI when NODE_ENV=production
         - rm -rf node_modules
-        # Amplify sets NODE_ENV=production which skips devDependencies by default
-        - npm ci --include=dev
+        # Amplify sets NODE_ENV=production; force install of Angular CLI (devDependency)
+        - NPM_CONFIG_PRODUCTION=false npm ci
     build:
       commands:
         - npm run build -- --configuration production
