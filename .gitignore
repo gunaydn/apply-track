@@ -42,3 +42,6 @@ testem.log
 Thumbs.db
 
 
+
+# Backend lives in its own repo (Railway); not needed for Amplify frontend builds
+backend/
