@@ -1,0 +1,20 @@
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - nvm install 20
+        - nvm use 20
+        # Amplify sets NODE_ENV=production, which skips Angular CLI (devDependency)
+        - npm install --include=dev
+    build:
+      commands:
+        - node -v
+        - npm run build -- --configuration production
+  artifacts:
+    baseDirectory: dist/apply-track
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - node_modules/**/*
