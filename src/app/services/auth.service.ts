@@ -8,17 +8,15 @@ import {
   RegisterRequest,
   AuthUser,
 } from '../models/auth.model';
-import { getApiBaseUrl } from '../config/api.config';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  constructor(private http: HttpClient) {}
+  private apiUrl = `${environment.apiUrl}/auth`;
 
-  private get apiUrl(): string {
-    return `${getApiBaseUrl()}/auth`;
-  }
+  constructor(private http: HttpClient) {}
 
   login(loginData: LoginRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/login`, loginData);

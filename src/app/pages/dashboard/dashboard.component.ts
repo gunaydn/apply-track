@@ -1,14 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { Application, ApplicationStatus } from 'src/app/models/job-application';
 import { ApplicationService } from 'src/app/services/application.service';
 import { NotificationService } from 'src/app/services/notification.service';
+import { Resume, ResumeService } from 'src/app/services/resume.service';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
   applications: Application[] = [];
 
   statusChartGradient = '';
@@ -41,14 +43,50 @@ export class DashboardComponent implements OnInit {
     textClass: string;
   }[] = [];
 
+  currentResume: Resume | null = null;
+  isResumeStatusLoading = false;
+
+  private resumeSubscription?: Subscription;
+
   constructor(
     private applicationService: ApplicationService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private resumeService: ResumeService
   ) {}
 
   ngOnInit(): void {
     this.loadDashboardData();
+    this.loadResumeStatus();
     this.checkNotificationPrompt();
+
+    this.resumeSubscription = this.resumeService.resumeChanged$.subscribe(
+      (resume) => {
+        this.currentResume = resume;
+      }
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.resumeSubscription?.unsubscribe();
+  }
+
+  loadResumeStatus(): void {
+    this.isResumeStatusLoading = true;
+
+    this.resumeService.getCurrentResume().subscribe({
+      next: (resume) => {
+        this.currentResume = resume;
+        this.isResumeStatusLoading = false;
+      },
+      error: () => {
+        this.currentResume = null;
+        this.isResumeStatusLoading = false;
+      },
+    });
+  }
+
+  openResumeManager(): void {
+    this.resumeService.requestOpenModal();
   }
 
   loadDashboardData(): void {

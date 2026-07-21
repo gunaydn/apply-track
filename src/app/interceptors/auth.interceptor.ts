@@ -11,7 +11,6 @@ import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 import { AuthService } from '../services/auth.service';
-import { rewriteLocalhostApiUrl } from '../config/api.config';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -21,31 +20,25 @@ export class AuthInterceptor implements HttpInterceptor {
     request: HttpRequest<unknown>,
     next: HttpHandler
   ): Observable<HttpEvent<unknown>> {
-    const rewrittenUrl = rewriteLocalhostApiUrl(request.url);
-    const baseRequest =
-      rewrittenUrl !== request.url
-        ? request.clone({ url: rewrittenUrl })
-        : request;
-
-    const isAuthEndpoint = /\/auth\/(login|register)\b/.test(baseRequest.url);
+    const isAuthEndpoint = /\/auth\/(login|register)\b/.test(request.url);
     const token = this.authService.getToken();
 
     // Never attach a stale Bearer token to login/register.
     const authRequest =
       token && !isAuthEndpoint
-        ? baseRequest.clone({
+        ? request.clone({
             setHeaders: {
               Authorization: `Bearer ${token}`,
             },
           })
-        : baseRequest;
+        : request;
 
     return next.handle(authRequest).pipe(
       catchError((error: HttpErrorResponse) => {
         if (
           error.status === 401 &&
           !isAuthEndpoint &&
-          !baseRequest.url.includes('/notifications/') &&
+          !request.url.includes('/notifications/') &&
           this.authService.isLoggedIn()
         ) {
           this.authService.logout();

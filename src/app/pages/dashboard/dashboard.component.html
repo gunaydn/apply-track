@@ -1,8 +1,73 @@
 <div class="space-y-6">
   <!-- DESKTOP HEADER -->
-  <div class="hidden md:block mb-8">
-    <h2 class="text-3xl font-bold text-slate-900">Dashboard</h2>
-    <p class="text-slate-500 mt-1">Overview of your job application process.</p>
+  <div class="hidden md:flex md:items-start md:justify-between md:gap-6 mb-8">
+    <div class="min-w-0">
+      <h2 class="text-3xl font-bold text-slate-900">Dashboard</h2>
+      <p class="text-slate-500 mt-1">
+        Overview of your job application process.
+      </p>
+    </div>
+
+    <button
+      type="button"
+      (click)="openResumeManager()"
+      class="inline-flex max-w-xs shrink-0 items-center gap-3 rounded-2xl border border-slate-200 bg-white px-3 py-2.5 text-left shadow-sm transition hover:border-slate-300 hover:bg-slate-50"
+      [attr.aria-label]="
+        currentResume
+          ? 'Open uploaded CV'
+          : 'Upload CV'
+      "
+    >
+      <div
+        class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-xs font-bold"
+        [ngClass]="
+          currentResume
+            ? 'bg-red-50 text-red-600'
+            : 'bg-slate-100 text-slate-500'
+        "
+      >
+        PDF
+      </div>
+
+      <div class="min-w-0 flex-1">
+        <ng-container *ngIf="isResumeStatusLoading; else resumeStatusReady">
+          <p class="text-sm font-medium text-slate-500">Checking CV...</p>
+        </ng-container>
+
+        <ng-template #resumeStatusReady>
+          <ng-container *ngIf="currentResume; else noResumeState">
+            <p class="truncate text-sm font-semibold text-slate-900">
+              {{ currentResume.originalFileName }}
+            </p>
+
+            <div class="mt-1 flex items-center gap-1.5">
+              <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+              <span class="text-xs font-medium text-emerald-700">
+                CV ready
+              </span>
+            </div>
+          </ng-container>
+
+          <ng-template #noResumeState>
+            <p class="text-sm font-semibold text-slate-900">No CV uploaded</p>
+            <p class="mt-1 text-xs text-slate-500">Tap to upload your CV</p>
+          </ng-template>
+        </ng-template>
+      </div>
+
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-4 w-4 shrink-0 text-slate-400"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="m9 18 6-6-6-6" />
+      </svg>
+    </button>
   </div>
 
   <!-- MOBILE GREETING -->

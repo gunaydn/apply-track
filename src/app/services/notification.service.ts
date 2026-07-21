@@ -5,7 +5,6 @@ import { getMessaging, getToken, isSupported } from 'firebase/messaging';
 import { firstValueFrom } from 'rxjs';
 
 import { environment } from 'src/environments/environment';
-import { getApiBaseUrl } from '../config/api.config';
 
 type NotificationPromptStatus = 'accepted' | 'declined';
 
@@ -14,13 +13,10 @@ type NotificationPromptStatus = 'accepted' | 'declined';
 })
 export class NotificationService {
   private firebaseApp = initializeApp(environment.firebase);
+  private apiUrl = `${environment.apiUrl}/notifications`;
   private promptStorageKey = 'applytrack_notification_prompt_status';
 
   constructor(private http: HttpClient) {}
-
-  private get apiUrl(): string {
-    return `${getApiBaseUrl()}/notifications`;
-  }
 
   shouldShowNotificationPrompt(): boolean {
     const promptStatus = localStorage.getItem(this.promptStorageKey);
