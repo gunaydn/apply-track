@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  buildId: '2026-07-21-api-host-fix',
+  buildId: '2026-07-21-api-host-fix-v3',
   apiUrl: 'https://api-production-0b1da.up.railway.app',
   firebase: {
     apiKey: 'AIzaSyBZWCvbuVhhbWp9zKkhGBub68fuBkCs0g4',
