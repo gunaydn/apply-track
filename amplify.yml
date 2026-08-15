@@ -1,21 +1,22 @@
 version: 1
+
 frontend:
   phases:
     preBuild:
       commands:
-        # Amplify default Node is v22.18 / npm 10.9 — skip nvm.
         - node -v
         - npm -v
-        - rm -rf node_modules
-        # NODE_ENV=production would skip Angular CLI; --include=dev keeps it.
-        - npm ci --include=dev
+        - npm ci
+
     build:
       commands:
         - npm run build -- --configuration production
+
   artifacts:
     baseDirectory: dist/apply-track
     files:
-      - '**/*'
+      - "**/*"
+
   cache:
     paths:
-      - .npm/**/*
+      - ~/.npm/**/*
