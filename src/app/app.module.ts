@@ -12,6 +12,11 @@ import { ApplicationDetailComponent } from './pages/application-detail/applicati
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
+import { CvReviewComponent } from './pages/cv-review/cv-review.component';
+import { ResumeUploadComponent } from './shared/resume-upload/resume-upload.component';
+import { ResumeCardComponent } from './shared/resume-card/resume-card.component';
+import { ResumeViewerComponent } from './shared/resume-viewer/resume-viewer.component';
+import { CvReviewPanelComponent } from './shared/cv-review-panel/cv-review-panel.component';
 
 @NgModule({
   declarations: [
@@ -20,6 +25,11 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';
     ApplicationsComponent,
     ApplicationFormComponent,
     ApplicationDetailComponent,
+    CvReviewComponent,
+    ResumeUploadComponent,
+    ResumeCardComponent,
+    ResumeViewerComponent,
+    CvReviewPanelComponent,
   ],
   imports: [
     BrowserModule,

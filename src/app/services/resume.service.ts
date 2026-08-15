@@ -15,6 +15,41 @@ export interface Resume {
   updatedAt: string;
 }
 
+export type ResumeIssueSeverity =
+  | 'critical'
+  | 'important'
+  | 'nice_to_have';
+
+export interface ResumeAnalysisIssue {
+  severity: ResumeIssueSeverity;
+  section: string;
+  message: string;
+}
+
+export interface ResumeAnalysisRecommendation {
+  priority: number;
+  section: string;
+  recommendation: string;
+}
+
+export interface ResumeAnalysis {
+  _id: string;
+  resumeId: string;
+  contentHash: string;
+  model: string;
+  overallScore: number;
+  strengths: string[];
+  issues: ResumeAnalysisIssue[];
+  recommendations: ResumeAnalysisRecommendation[];
+  sectionScores: Record<string, number>;
+  analyzedAt?: string;
+}
+
+export interface ResumeAnalyzeResponse {
+  cached: boolean;
+  analysis: ResumeAnalysis;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -53,6 +88,13 @@ export class ResumeService {
 
   deleteCurrentResume(): Observable<{ message: string }> {
     return this.http.delete<{ message: string }>(`${this.apiUrl}/current`);
+  }
+
+  analyzeCurrentResume(): Observable<ResumeAnalyzeResponse> {
+    return this.http.post<ResumeAnalyzeResponse>(
+      `${this.apiUrl}/current/analyze`,
+      {}
+    );
   }
 
   getResumeFileBlob(): Observable<Blob> {

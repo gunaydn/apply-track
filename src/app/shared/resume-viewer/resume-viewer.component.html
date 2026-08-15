@@ -1,0 +1,38 @@
+<div class="w-full">
+  <!-- LOADING -->
+  <div
+    *ngIf="isLoading"
+    class="flex min-h-[300px] items-center justify-center rounded-2xl border border-slate-200 bg-white"
+  >
+    <p class="text-sm text-slate-500">Loading CV...</p>
+  </div>
+
+  <!-- ERROR -->
+  <div
+    *ngIf="!isLoading && error"
+    class="flex min-h-[300px] items-center justify-center rounded-2xl border border-red-200 bg-red-50"
+  >
+    <p class="text-sm font-medium text-red-600">
+      {{ error }}
+    </p>
+  </div>
+
+  <!-- PDF -->
+  <div *ngIf="!isLoading && !error" class="space-y-4">
+    <div
+      *ngFor="let pageNumber of pageNumbers"
+      class="w-full overflow-hidden bg-white lg:flex lg:justify-center lg:rounded-2xl lg:border lg:border-slate-200 lg:bg-slate-100 lg:p-6 lg:shadow-sm"
+    >
+      <!--
+        MOBILE: full width
+        DESKTOP: max 720px
+      -->
+      <div class="w-full lg:max-w-[720px]">
+        <canvas
+          #pdfCanvas
+          class="block h-auto w-full bg-white lg:shadow-sm"
+        ></canvas>
+      </div>
+    </div>
+  </div>
+</div>

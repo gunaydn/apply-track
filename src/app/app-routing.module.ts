@@ -5,6 +5,7 @@ import { ApplicationsComponent } from './pages/applications/applications.compone
 import { ApplicationFormComponent } from './pages/application-form/application-form.component';
 import { ApplicationDetailComponent } from './pages/application-detail/application-detail.component';
 import { AuthGuard } from './guards/auth.guard';
+import { CvReviewComponent } from './pages/cv-review/cv-review.component';
 
 const routes: Routes = [
   {
@@ -30,6 +31,11 @@ const routes: Routes = [
   {
     path: 'applications/:id',
     component: ApplicationDetailComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'cv-review',
+    component: CvReviewComponent,
     canActivate: [AuthGuard],
   },
   {

@@ -6,7 +6,6 @@ import { ApplicationService } from 'src/app/services/application.service';
 @Component({
   selector: 'app-application-detail',
   templateUrl: './application-detail.component.html',
-  styleUrls: ['./application-detail.component.scss'],
 })
 export class ApplicationDetailComponent implements OnInit {
   application: Application | undefined;

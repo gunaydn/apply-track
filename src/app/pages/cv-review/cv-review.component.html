@@ -1,0 +1,162 @@
+<div class="min-h-[calc(100vh-96px)] px-4 py-6 sm:py-10">
+  <!-- LOADING -->
+  <div
+    *ngIf="isLoadingResume"
+    class="flex min-h-[60vh] items-center justify-center"
+  >
+    <p class="text-sm text-slate-500">Loading your CV...</p>
+  </div>
+
+  <!-- ERROR -->
+  <div
+    *ngIf="!isLoadingResume && loadError"
+    class="mx-auto max-w-xl rounded-2xl border border-red-200 bg-red-50 p-4"
+  >
+    <p class="text-sm font-medium text-red-700">
+      {{ loadError }}
+    </p>
+  </div>
+
+  <!-- NO CV -->
+  <div
+    *ngIf="
+      !isLoadingResume && !loadError && !currentResume && !showReviewWorkspace
+    "
+    class="flex min-h-[60vh] items-center justify-center"
+  >
+    <div class="w-full max-w-xl">
+      <div class="mb-6 text-center">
+        <h1 class="text-2xl font-bold text-slate-900">CV Review</h1>
+
+        <p class="mt-2 text-sm text-slate-500">
+          Upload your CV to get AI-powered feedback and improvement suggestions.
+        </p>
+      </div>
+
+      <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+        <app-resume-upload
+          [isUploading]="isUploading"
+          (fileSelected)="onResumeFileSelected($event)"
+        ></app-resume-upload>
+
+        <button
+          type="button"
+          (click)="uploadResume()"
+          [disabled]="!selectedFile || isUploading"
+          class="mt-4 h-11 w-full rounded-xl bg-slate-900 text-sm font-medium text-white transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500"
+        >
+          {{ isUploading ? "Uploading..." : "Upload CV" }}
+        </button>
+
+        <p *ngIf="uploadError" class="mt-3 text-sm font-medium text-red-600">
+          {{ uploadError }}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CV EXISTS / READY TO REVIEW -->
+  <div
+    *ngIf="
+      !isLoadingResume && !loadError && currentResume && !showReviewWorkspace
+    "
+    class="flex min-h-[60vh] items-center justify-center"
+  >
+    <div
+      class="w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-6 text-center shadow-sm"
+    >
+      <div
+        class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-red-50 text-sm font-bold text-red-600"
+      >
+        PDF
+      </div>
+
+      <h2 class="mt-4 text-lg font-semibold text-slate-900">
+        Your CV is ready
+      </h2>
+
+      <p class="mt-2 truncate text-sm text-slate-500">
+        {{ currentResume.originalFileName }}
+      </p>
+
+      <p class="mt-4 text-sm text-slate-600">
+        Get personalized feedback and suggestions to improve your CV.
+      </p>
+
+      <button
+        type="button"
+        (click)="startReview()"
+        [disabled]="isAnalyzing"
+        class="mt-6 h-11 rounded-xl bg-slate-900 px-6 text-sm font-medium text-white transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500"
+      >
+        {{ isAnalyzing ? "Reviewing..." : "Take a Review" }}
+      </button>
+    </div>
+  </div>
+
+  <!-- REVIEW WORKSPACE -->
+  <div
+    *ngIf="
+      !isLoadingResume && !loadError && currentResume && showReviewWorkspace
+    "
+    class="mx-auto w-full max-w-[1600px]"
+  >
+    <!-- HEADER -->
+    <div class="mb-5 sm:mb-6">
+      <h1 class="text-2xl font-bold text-slate-900">CV Review</h1>
+
+      <p class="mt-1 text-sm text-slate-500">
+        Review your CV alongside personalized improvement feedback.
+      </p>
+    </div>
+
+    <!-- MOBILE TABS -->
+    <div class="mb-4 flex rounded-xl bg-slate-200/70 p-1 lg:hidden">
+      <button
+        type="button"
+        (click)="setMobileView('cv')"
+        class="flex-1 rounded-lg px-4 py-2.5 text-sm font-medium transition"
+        [ngClass]="
+          mobileView === 'cv'
+            ? 'bg-white text-slate-900 shadow-sm'
+            : 'text-slate-500'
+        "
+      >
+        CV
+      </button>
+
+      <button
+        type="button"
+        (click)="setMobileView('review')"
+        class="flex-1 rounded-lg px-4 py-2.5 text-sm font-medium transition"
+        [ngClass]="
+          mobileView === 'review'
+            ? 'bg-white text-slate-900 shadow-sm'
+            : 'text-slate-500'
+        "
+      >
+        Review
+      </button>
+    </div>
+
+    <!-- DESKTOP: 2 COLUMNS / MOBILE: TABBED -->
+    <div class="grid gap-6 lg:grid-cols-[minmax(0,45%)_minmax(0,55%)]">
+      <!-- CV PANEL -->
+      <div
+        [class.hidden]="mobileView !== 'cv'"
+        class="lg:sticky lg:top-24 lg:block lg:self-start"
+      >
+        <app-resume-viewer [fileUrl]="currentResumeFileUrl"></app-resume-viewer>
+      </div>
+
+      <!-- REVIEW PANEL -->
+      <div [class.hidden]="mobileView !== 'review'" class="lg:block">
+        <app-cv-review-panel
+          [analysis]="analysis"
+          [isAnalyzing]="isAnalyzing"
+          [errorMessage]="analysisError"
+        ></app-cv-review-panel>
+      </div>
+    </div>
+  </div>
+</div>

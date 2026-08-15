@@ -9,7 +9,6 @@ import { ApplicationStatus } from 'src/app/models/job-application';
 @Component({
   selector: 'app-application-form',
   templateUrl: './application-form.component.html',
-  styleUrls: ['./application-form.component.scss'],
 })
 export class ApplicationFormComponent implements OnInit {
   statuses: ApplicationStatus[] = [
