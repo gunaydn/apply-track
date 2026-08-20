@@ -2,7 +2,7 @@
 
 **ApplyTrack** is a modern job application tracking platform designed to help users organize their applications, monitor progress, and improve their CV with AI-powered feedback.
 
-🌐 **Live Demo:** https://www.applytrack.com
+🌐 **Live Demo:** https://www.applytrack.dev
 
 ## Features
 
@@ -208,7 +208,7 @@ http://localhost:4200
 
 The production version of ApplyTrack is available at:
 
-### 🚀 [www.applytrack.com](https://www.applytrack.com)
+### 🚀 [www.applytrack.dev](https://www.applytrack.dev)
 
 ## Future Improvements
 
